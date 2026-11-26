@@ -72,6 +72,17 @@ Esto deja en `data/processed/`:
 Si sale un error de certificado SSL en Mac, correr una vez
 `/Applications/Python\ 3.*/Install\ Certificates.command`.
 
+## Resultados
+
+Cada número de la wiki sale de alguno de estos scripts (desde `src/`):
+
+```bash
+python -m proyecciones.distorsion     # δ y errores de escala (Paso 3)
+python -m proyecciones.verificacion   # comparación con PROJ y con GRS80
+```
+
+Las tablas quedan en `resultados/tablas/`.
+
 ## Compilar la wiki
 
 Con Overleaf: subir la carpeta `wiki/` (o conectar el repo) y compilar `main.tex`.
@@ -85,7 +96,8 @@ latexmk -pdf main.tex
 ## Convenciones
 
 - Tierra esférica, R = 6371.0088 km.
-- Radianes en el código, grados en el texto.
+- Las funciones que reciben puntos (lat, lon) los toman en grados; los
+  parámetros internos como φ1, φ2 van en radianes.
 - Notación: φ latitud, λ longitud, q(φ) latitud isométrica, w = λ + i q,
   σ factor de escala, Ω región de México, δ(Ω) distorsión.
 - Máximo 3 figuras, con pie y fuente.

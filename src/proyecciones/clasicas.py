@@ -11,7 +11,9 @@ from .constantes import (R_M, PHI1, PHI2, LAT0_DEG, LON0_DEG, X0_M, Y0_M,
 
 
 def _w(lat, lon, lon0):
-    return coordenada_w(np.radians(lat), np.radians(np.asarray(lon) - lon0))
+    # diferencia de longitudes llevada a [-180, 180)
+    dlon = (np.asarray(lon) - lon0 + 180.0) % 360.0 - 180.0
+    return coordenada_w(np.radians(lat), np.radians(dlon))
 
 
 def mercator(lat, lon, lon0=0.0, R=R_M):
@@ -21,9 +23,15 @@ def mercator(lat, lon, lon0=0.0, R=R_M):
 
 
 def lambert_constantes(phi1=PHI1, phi2=PHI2):
-    """(n, F) para que σ(φ1) = σ(φ2) = 1. Paralelos en radianes."""
+    """(n, F) para que σ(φ1) = σ(φ2) = 1. Paralelos en radianes.
+
+    Si φ1 = φ2 (cono tangente) se usa el límite n = sen φ1.
+    """
     q1, q2 = latitud_isometrica(phi1), latitud_isometrica(phi2)
-    n = np.log(np.cos(phi1) / np.cos(phi2)) / (q2 - q1)
+    if np.isclose(phi1, phi2):
+        n = np.sin(phi1)
+    else:
+        n = np.log(np.cos(phi1) / np.cos(phi2)) / (q2 - q1)
     F = np.cos(phi1) * np.exp(n * q1) / n
     return n, F
 

@@ -1,0 +1,13 @@
+,valor
+mercator_dif_max_posicion_m,3.725290298461914e-09
+mercator_dif_max_sigma,7.779998867363247e-12
+lambert_dif_max_posicion_m,6.2399046883254294e-09
+lambert_dif_max_sigma,8.326672684688674e-12
+esfera_vs_grs80_desplaz_max_km,9.596860887782341
+esfera_vs_grs80_desplaz_mediana_km,4.020239652671195
+delta_lambert_grs80,0.01312018227750562
+delta_lambert_esfera,0.013189826015851547
+pares,19990.0
+haversine_vs_grs80_min_%,-0.19401681185890177
+haversine_vs_grs80_mediana_%,0.07949613578057904
+haversine_vs_grs80_max_%,0.49110015496787923
