@@ -23,8 +23,8 @@ Para convertir coordenadas, el repositorio incluye la función
 las columnas de un CSV) y devuelve $x, y$ en metros. La opción recomendada es
 la óptima sobre la envolvente convexa, cuyo modelo ya ajustado viene en el
 repositorio, así que no hace falta resolver nada; también acepta
-\texttt{"optima"}, \texttt{"lambert"} y \texttt{"mercator"}, y avisa si un
-punto queda fuera de la región. Desde la terminal:
+\texttt{"optima"}, \texttt{"lambert"} y \texttt{"mercator"}; avisa si un
+punto queda fuera de la región, y las filas sin coordenadas quedan vacías. Desde la terminal:
 \begin{lstlisting}[basicstyle=\footnotesize\ttfamily]
 python -m proyecciones.conversion clientes.csv clientes_xy.csv
 \end{lstlisting}

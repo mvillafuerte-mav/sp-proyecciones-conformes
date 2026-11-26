@@ -54,25 +54,33 @@ def latlon_a_xy(lat, lon, proyeccion="recomendada"):
     """
     lat = np.asarray(lat, dtype=float)
     lon = np.asarray(lon, dtype=float)
+    forma = np.broadcast_shapes(lat.shape, lon.shape)
+    la = np.broadcast_to(lat, forma).ravel()
+    lo = np.broadcast_to(lon, forma).ravel()
     if proyeccion == "recomendada":
         proyeccion = "optima_envolvente"
-    if proyeccion == "mercator":
-        x, y = mercator(lat, lon)
-    elif proyeccion == "lambert":
-        x, y = lambert(lat, lon)
-    elif proyeccion in ARCHIVOS:
-        m = _modelo(proyeccion)
-        lejos = m.distancia_a_malla(lat, lon) > DISTANCIA_AVISO
-        if np.any(lejos):
-            warnings.warn(f"{int(lejos.sum())} punto(s) quedan fuera de la región "
-                          "donde se ajustó la proyección; ahí no hay garantía de escala.")
-        x, y = m.proyectar(lat, lon)
-    else:
+    if proyeccion not in ("mercator", "lambert") and proyeccion not in ARCHIVOS:
         raise ValueError(f"proyección desconocida: {proyeccion!r}")
-    x, y = np.asarray(x, dtype=float), np.asarray(y, dtype=float)
-    if lat.ndim == 0:
-        return float(x.ravel()[0]), float(y.ravel()[0])
-    return x.reshape(lat.shape), y.reshape(lat.shape)
+
+    # filas sin coordenadas (NaN) se devuelven como NaN
+    x = np.full(la.shape, np.nan)
+    y = np.full(la.shape, np.nan)
+    ok = np.isfinite(la) & np.isfinite(lo)
+    if ok.any():
+        if proyeccion == "mercator":
+            x[ok], y[ok] = mercator(la[ok], lo[ok])
+        elif proyeccion == "lambert":
+            x[ok], y[ok] = lambert(la[ok], lo[ok])
+        else:
+            m = _modelo(proyeccion)
+            lejos = m.distancia_a_malla(la[ok], lo[ok]) > DISTANCIA_AVISO
+            if np.any(lejos):
+                warnings.warn(f"{int(lejos.sum())} punto(s) quedan fuera de la región "
+                              "donde se ajustó la proyección; ahí no hay garantía de escala.")
+            x[ok], y[ok] = m.proyectar(la[ok], lo[ok])
+    if len(forma) == 0:
+        return float(x[0]), float(y[0])
+    return x.reshape(forma), y.reshape(forma)
 
 
 def convertir_csv(entrada, salida, proyeccion="recomendada", col_lat="lat", col_lon="lon"):

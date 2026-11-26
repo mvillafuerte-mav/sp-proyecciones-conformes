@@ -88,7 +88,7 @@ def tabla_comparativa():
         r"\midrule",
     ]
     for _, r in t.iterrows():
-        lineas.append(f"{nombres[r['Proyección']]} & {r['delta']:.4f} & {r['esc']:.2f} & "
+        lineas.append(f"{nombres[r['Proyección']]} & {r['delta']:.5f} & {r['esc']:.2f} & "
                       f"{r['med']:.2f} & {r['p95']:.2f} & {r['max']:.2f} & "
                       f"{r['km']:.2f} & {r['kn']:.2f} \\\\")
     lineas += [r"\bottomrule", r"\end{tabular}"]

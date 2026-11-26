@@ -120,3 +120,12 @@ def test_conversion_con_modelos_guardados():
     for p in ("recomendada", "lambert", "mercator"):
         x0, y0 = latlon_a_xy(19.4326, -99.1332, p)
         assert type(x0) is float and type(y0) is float
+
+
+def test_conversion_con_nan_y_formas():
+    from proyecciones.conversion import latlon_a_xy
+    for p in ("recomendada", "lambert"):
+        x, y = latlon_a_xy([19.43, np.nan], [-99.13, -99.0], p)
+        assert np.isfinite(x[0]) and np.isnan(x[1]) and np.isnan(y[1])
+    x, y = latlon_a_xy(np.array([[19.4, 20.0]]), np.array([[-99.1, -100.0]]))
+    assert x.shape == (1, 2)
