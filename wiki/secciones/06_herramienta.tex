@@ -19,7 +19,8 @@ distancias, k-means y vecinos se calcularon con las cabeceras municipales
 \end{table}
 
 Para convertir coordenadas, el repositorio incluye la función
-\texttt{latlon\_a\_xy} en \texttt{src/proyecciones/conversion.py}. Recibe
+\texttt{latlon\_a\_xy}, del módulo \texttt{conversion} del paquete
+\texttt{proyecciones}. Recibe
 grados (números, arreglos o las columnas de un CSV) y devuelve $x, y$ en
 metros. La opción recomendada es EPSG:6372 (sección~\ref{sec:recomendacion});
 también ofrece la óptima sobre la envolvente, cuyo modelo ajustado viene en el
