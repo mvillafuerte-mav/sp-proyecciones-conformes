@@ -169,7 +169,33 @@ $f(w) = \int_{w_0}^{w} f'(\xi)\,d\xi$ no depende del camino. Ese cálculo es
 numérico y se describe a continuación.
 
 \subsubsection*{Solución numérica}
-% Contorno en el plano w, método, conjugada, integración, delta de la óptima.
+
+El contorno de México continental (2061 vértices) se lleva al plano $w$ con
+$w = \lon + i\,q(\lat)$, midiendo $\lon$ desde $102^\circ$\,O. Ahí se
+resuelve \eqref{eq:dirichlet} con $c = 0$ por diferencias finitas
+(sección~\ref{sec:metodo}), en una malla de paso $0.001$ (unos 6~km) con
+58\,312 nodos; el cálculo tarda menos de un segundo. La conjugada $\tilde h$
+se obtiene integrando las ecuaciones de Cauchy--Riemann,
+$d\tilde h = -h_q\,d\lon + h_\lon\,dq$, sobre las aristas de la malla; con
+ella se forma $f' = R\exp(h + c + i\tilde h)$ y se integra otra vez para
+obtener $f$. Elegimos $f = 0$ y $\arg f' = 0$ en $(23.5^\circ$\,N,
+$102^\circ$\,O$)$, para que ahí el norte quede hacia arriba, y $c$ de modo
+que la escala quede centrada en 1.
+
+El resultado confirma la teoría: $\ln\sigma \le 0$ en todo el interior
+(su máximo es $-9\times10^{-10}$), como exige \eqref{eq:subarmonica}, y su
+mínimo está en $24.0^\circ$\,N, $102.3^\circ$\,O. La distorsión de la
+proyección óptima es
+\begin{equation}
+  \delta^* = 0.00184 ,
+  \label{eq:delta_optima}
+\end{equation}
+así que $\sigma$ queda entre $0.99908$ y $1.00092$: un error máximo de escala
+de $0.092\,\%$. Es 7 veces menor que el de Lambert ($0.0132$) y 76 veces
+menor que el de Mercator ($0.140$). El valor no cambia al refinar la malla
+($0.0018434$ con pasos de $0.002$, $0.001$ y $0.0005$) ni al simplificar más
+o menos el contorno (entre $0.001843$ y $0.001844$ con tolerancias de
+$0.005^\circ$ a $0.02^\circ$).
 
 % Figura 2 (Persona 3): mapa de sigma para las tres proyecciones.
 

@@ -79,6 +79,7 @@ Cada número de la wiki sale de alguno de estos scripts (desde `src/`):
 ```bash
 python -m proyecciones.distorsion     # δ y errores de escala (Paso 3)
 python -m proyecciones.verificacion   # comparación con PROJ y con GRS80
+python -m proyecciones.dirichlet      # proyección óptima (Paso 4) y su validación
 ```
 
 Las tablas quedan en `resultados/tablas/`.

@@ -14,7 +14,6 @@ def test_derivada_q_es_sec():
     assert np.isclose(dq, 1 / np.cos(phi))
 
 
-# TODO Persona 2: Dirichlet con h = Re(e^w) en la frontera
 
 
 def test_haversine_un_grado_de_latitud():
@@ -69,3 +68,32 @@ def test_sigma_igual_a_factores_de_proj():
              "+x_0=2500000 +y_0=0 +R=6371008.8")
     k = p.get_factors(lon, lat).parallel_scale
     assert np.allclose(sigma_lambert(lat), k, rtol=1e-9)
+
+
+def _region_prueba():
+    # cuadrilátero con una muesca, en lat/lon (grados)
+    lon = np.array([-110, -90, -90, -100, -100, -110, -110.0])
+    lat = np.array([15, 15, 30, 30, 24, 24, 15.0])
+    return lat[:-1], lon[:-1]
+
+
+def test_dirichlet_funcion_conocida():
+    from proyecciones.dirichlet import Malla, w_de
+    lat, lon = _region_prueba()
+    ws = w_de(35.0, -120.0)
+    exacta = lambda w: np.log(np.abs(w - ws))
+    m = Malla(w_de(lat, lon), 0.004)
+    u = m.resolver(exacta)
+    assert np.max(np.abs(u - exacta(m.w))) < 1e-4
+
+
+def test_optima_mejor_que_lambert_y_conforme():
+    from proyecciones.dirichlet import ProyeccionOptima, verificar_escala
+    from proyecciones.distorsion import distorsion, sigma_lambert, malla_interior
+    lat, lon = _region_prueba()
+    p = ProyeccionOptima(lat, lon, h=0.004)
+    la, lo = malla_interior(np.r_[lat, lat[0]], np.r_[lon, lon[0]], paso=0.5)
+    assert p.delta < distorsion(sigma_lambert(la))
+    e_sigma, e_ne, e_ang = verificar_escala(p, np.array([20.0, 27.0]),
+                                            np.array([-95.0, -95.0]), 1000.0)
+    assert e_sigma < 1e-3 and e_ne < 1e-3 and e_ang < 0.05

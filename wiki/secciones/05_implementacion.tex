@@ -2,7 +2,33 @@
 \section{Implementación y verificación}
 
 \subsection{Método numérico para el problema de Dirichlet}
-% Método, discretización, caso conocido (Re e^w), error al refinar.
+\label{sec:metodo}
+
+Se usaron diferencias finitas de cinco puntos en una malla cuadrada del plano
+$w$. En los nodos junto a la frontera, el vecino que cae fuera de $\region$ se
+sustituye por el punto donde la línea de la malla corta el contorno, con su
+distancia real (fórmula de Shortley--Weller \cite{shortley1938}); así el
+error sigue siendo $O(h^2)$ aunque el contorno no coincida con la malla. El
+sistema lineal es ralo y se resuelve por factorización LU con SciPy.
+
+Para verificar el método se impuso en $\frontera$ una función armónica
+conocida, $\ln|w - w_*|$, con $w_*$ en el Pacífico frente a Baja California.
+El error máximo en los nodos fue $1.5\times10^{-4}$, $3.7\times10^{-5}$,
+$9.7\times10^{-6}$ y $2.5\times10^{-6}$ con pasos $h = 0.004$, $0.002$,
+$0.001$ y $0.0005$: baja a la cuarta parte cada vez que $h$ se divide entre
+dos, como corresponde a $O(h^2)$. Además se verificó el mapa completo: en cada
+cabecera se proyectaron dos puntos a 1~km al norte y al este, y la escala
+medida coincide con $e^{\ln\sigma}$ con error relativo menor que
+$2.2\times10^{-5}$, igual en las dos direcciones, y con un ángulo recto
+entre ellas con error de $0.003^\circ$.
+
+Antes se probó otra vía: escribir $h$ como parte real de un polinomio complejo
+ajustado en la frontera, que da la conjugada sin esfuerzo \cite{brubeck2021}.
+Para México no funciona: el residuo en la frontera se queda en
+$1.1\times10^{-3}$, $9.6\times10^{-4}$ y $9.2\times10^{-4}$ con grados 40, 80
+y 160, del mismo orden que $\delta^*$. La causa es la geometría: el Golfo de
+California es un canal largo y angosto fuera de $\region$, y cerca de una
+región así los polinomios convergen demasiado lento.
 
 \subsection{Verificación con PROJ}
 
