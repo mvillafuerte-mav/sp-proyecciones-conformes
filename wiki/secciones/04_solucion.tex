@@ -16,8 +16,8 @@ Esta es la proyección de Mercator. Como $f' = R \neq 0$, es conforme, y por
   \label{eq:sigma_mercator}
 \end{equation}
 El factor no depende de la longitud y crece con la latitud. En México va de
-$\sec(14.5^\circ) \approx 1.033$ en la frontera con Guatemala a
-$\sec(32.7^\circ) \approx 1.189$ en Baja California: la misma distancia real
+$\sec(14.53^\circ) \approx 1.033$ en la frontera con Guatemala a
+$\sec(32.72^\circ) \approx 1.189$ en Baja California: la misma distancia real
 se ve alrededor de 15\,\% más larga en el norte que en el sur. Esto confirma
 la sospecha de los analistas del cliente.
 
@@ -81,6 +81,7 @@ estereográfica $R\,e^{iw}$.
 \end{equation}
 
 \subsection{Paso 4. Proyección óptima de Chebyshev}
+\label{sec:paso4}
 \subsubsection*{Planteamiento}
 
 Mercator y Lambert son dos funciones analíticas particulares. La pregunta del
@@ -91,8 +92,9 @@ $\dist$ sobre México. Tomando logaritmo en \eqref{eq:sigma},
   \label{eq:lnsigma}
 \end{equation}
 donde $h$ es armónica en $\region$ por \eqref{eq:lnfprima}. El segundo término
-no depende de la proyección: es la curvatura de la esfera. Con
-$\cos\lat = \operatorname{sech} q$,
+no depende de la proyección: es el factor de la métrica \eqref{eq:metrica}, y
+en él está la curvatura de la esfera. Como $\cos\lat = \operatorname{sech} q$,
+se tiene $-\ln(R\cos\lat) = \ln\cosh q - \ln R$, y con $\nabla^2 h = 0$,
 \begin{equation}
   \nabla^2_w \ln\sigma = \frac{d^2}{dq^2}\ln\cosh q = \operatorname{sech}^2 q
   = \cos^2\lat > 0 ,
@@ -102,8 +104,9 @@ así que $\ln\sigma$ \emph{no} es armónica, sino subarmónica, para cualquier
 proyección conforme. Por el principio del máximo, su máximo siempre está en
 la frontera $\frontera$.
 
-El teorema de Chebyshev (1856), demostrado por Milnor \cite{milnor1969}, dice
-que la proyección óptima es la que tiene escala constante en la frontera. Por
+El teorema de Chebyshev, enunciado en 1856 y demostrado por D.~A. Grave en
+1896, dice que la proyección óptima es la que tiene escala constante en la
+frontera; aquí seguimos la demostración de Milnor \cite{milnor1969}. Por
 \eqref{eq:lnsigma}, pedir $\sigma = e^{c}$ en $\frontera$ es lo mismo que
 \begin{equation}
   \nabla^2 h = 0 \text{ en } \region, \qquad
@@ -116,7 +119,9 @@ solo multiplica el mapa por $e^{c}$ y no cambia $\dist$.
 \paragraph{Por qué es óptima.} Sea $\sigma^*$ el factor de la proyección de
 Chebyshev. Por \eqref{eq:subarmonica}, el máximo de $\ln\sigma^*$ es $c$ y se
 alcanza en $\frontera$; sea $m^*$ su mínimo, alcanzado en un punto $p$, de modo
-que $\delta^* = c - m^*$. Cualquier otra proyección conforme tiene
+que $\delta^* = c - m^*$. El punto $p$ es interior: si estuviera en la
+frontera, $\ln\sigma^*$ valdría $c$ en todo $\region$, lo que contradice
+\eqref{eq:subarmonica}. Cualquier otra proyección conforme tiene
 $\ln\sigma = \ln\sigma^* + u$ con $u = h - h^*$ armónica. Si $b \in \frontera$
 es donde $u$ alcanza su máximo en la frontera, el principio del máximo da
 $u(b) \geq u(p)$, y entonces

@@ -47,8 +47,10 @@ región simplemente conexa, existe una rama analítica de $\log f'$, y
   \nabla^2 \ln|f'| = 0 .
   \label{eq:lnfprima}
 \end{equation}
-Es decir, el logaritmo del factor de escala de un mapeo conforme es armónico, y
-su conjugada es el ángulo de rotación $\arg f'$.
+Es decir, el logaritmo de $|f'|$, el factor con el que $f$ estira las
+longitudes del plano, es armónico, y su conjugada es el ángulo de rotación
+$\arg f'$. Ojo: esto todavía no es el factor de escala del mapa sobre la
+esfera, que incluye además la curvatura (sección~\ref{sec:paso4}).
 
 Dados una región acotada $\Omega$ y valores $g$ continuos en su frontera, el
 \emph{problema de Dirichlet} pide $h$ armónica en $\Omega$ con $h = g$ en
@@ -77,9 +79,11 @@ triángulos semejantes, su distancia al centro es
   \qquad \zeta = r(\lat)\,e^{i\lon} .
   \label{eq:estereo}
 \end{equation}
-Como $dr/d\lat = -R/(1+\sin\lat)$, un desplazamiento sobre la esfera de
-longitud $ds$ se proyecta con longitud $|d\zeta| = ds/(1+\sin\lat)$ en
-\emph{cualquier} dirección. La proyección estereográfica escala igual en todas
+Un desplazamiento hacia el norte mide $R\,d\lat$ en la esfera y
+$|dr| = R\,d\lat/(1+\sin\lat)$ en el plano; uno hacia el este mide
+$R\cos\lat\,d\lon$ en la esfera y $r\,d\lon = R\cos\lat\,d\lon/(1+\sin\lat)$
+en el plano. Las dos direcciones se reducen por el mismo factor, así que
+$|d\zeta| = ds/(1+\sin\lat)$ en \emph{cualquier} dirección. La proyección estereográfica escala igual en todas
 direcciones, así que es conforme.
 
 \subsection{Coordenada compleja sobre la esfera}
@@ -116,7 +120,7 @@ dividida entre la longitud real, es
 igual en todas direcciones: la proyección es conforme. El recíproco también
 vale: una proyección conforme que conserva la orientación, escrita en la
 coordenada $w$, cumple las ecuaciones de Cauchy--Riemann
-\cite{snyder1987,milnor1969}. Por lo tanto, \emph{elegir una proyección
+\cite{ahlfors1979,milnor1969}. Por lo tanto, \emph{elegir una proyección
 conforme es lo mismo que elegir una función analítica $f$}, y todo lo que
 falta es decidir cuál.
 
