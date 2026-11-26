@@ -196,9 +196,21 @@ de $0.092\,\%$. Su distorsión es 7 veces menor que la de Lambert
 ($\delta = 0.0132$) y 76 veces menor que la de Mercator ($\delta = 0.140$). El valor no cambia al refinar la malla
 ($0.0018434$ con pasos de $0.002$, $0.001$ y $0.0005$) ni al simplificar más
 o menos el contorno (entre $0.001843$ y $0.001844$ con tolerancias de
-$0.005^\circ$ a $0.02^\circ$).
+$0.005^\circ$ a $0.02^\circ$). La figura~\ref{fig:sigma} compara el patrón de escala de las
+proyecciones: en Mercator y Lambert $\sigma$ cambia por franjas de latitud,
+mientras que en la óptima es mínima en el centro del país y sube por igual
+hacia todo el borde.
 
-% Figura 2 (Persona 3): mapa de sigma para las tres proyecciones.
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=\linewidth]{fig2_sigma}
+  \caption{Factor de escala sobre México para cada proyección, reescalado para
+    quedar centrado en 1 y expresado como desviación en por ciento. La escala de
+    color cambia de panel a panel: la de Mercator es casi 80 veces más amplia
+    que la de la óptima (México). En las dos óptimas $\sigma$ es constante en toda la
+    frontera, como pide la condición de Chebyshev. Fuente: elaboración propia.}
+  \label{fig:sigma}
+\end{figure}
 
 \subsection{Paso 5. Efecto en los datos del cliente}
 
@@ -219,7 +231,8 @@ Q.\,Roo, Tab., Ver., Yuc.), con 400, 940 y 1136 puntos.
 
 \paragraph{Distancias.} Se tomaron 20\,000 pares al azar dentro de cada región
 y otros 20\,000 en todo el país, y para cada uno se comparó la distancia
-euclidiana en la proyección con la haversine. Con Mercator, con escala exacta
+euclidiana en la proyección con la haversine. La figura~\ref{fig:errores} resume la
+distribución. Con Mercator, con escala exacta
 en el ecuador, la mediana del error es de $5.0\,\%$ en el Sur, $6.3\,\%$ en el
 Centro y $11.6\,\%$ en el Norte, con máximos de $18.6\,\%$. Corregir con una
 escala constante no basta (y no cambiaría ningún agrupamiento): en el Norte la
@@ -258,4 +271,12 @@ así que un mapa de densidad (puntos por unidad de área del plano) subestima la
 densidad del norte hasta en un $24\,\%$ frente a la del sur. Con Lambert el
 factor está entre $0.989$ y $1.015$, y con la óptima entre $0.998$ y $1.002$.
 
-% Figura 3 (Persona 3): distribución del error en distancias.
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=\linewidth]{fig3_errores}
+  \caption{Error relativo en distancias entre pares de cabeceras, por región
+    y proyección, en escala logarítmica. La caja va del percentil 25 al 75, la
+    línea blanca es la mediana, los bigotes van del percentil 5 al 95 y la marca
+    aislada es el máximo. Fuente: elaboración propia con datos del INEGI.}
+  \label{fig:errores}
+\end{figure}

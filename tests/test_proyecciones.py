@@ -105,3 +105,17 @@ def test_kmeans_lloyd_grupos_separados():
     X = np.vstack([rng.normal(0, 1, (50, 2)), rng.normal(100, 1, (50, 2))])
     et = kmeans_lloyd(X, X[[0, 50]])
     assert (et[:50] == 0).all() and (et[50:] == 1).all()
+
+
+def test_conversion_con_modelos_guardados():
+    from proyecciones.conversion import latlon_a_xy
+    from proyecciones.datos import haversine
+    lat, lon = np.array([19.4326, 25.6866]), np.array([-99.1332, -100.3161])
+    for p in ("recomendada", "optima", "lambert", "mercator"):
+        x, y = latlon_a_xy(lat, lon, p)
+        assert x.shape == (2,)
+    x, y = latlon_a_xy(lat, lon)
+    d = np.hypot(x[1] - x[0], y[1] - y[0])
+    assert abs(d / haversine(lat[0], lon[0], lat[1], lon[1]) - 1) < 0.002
+    x0, y0 = latlon_a_xy(19.4326, -99.1332)
+    assert isinstance(x0, float)

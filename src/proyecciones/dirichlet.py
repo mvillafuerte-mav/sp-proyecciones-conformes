@@ -239,6 +239,33 @@ class ProyeccionOptima:
         # f(w0) = 0 en el punto de referencia (no en el nodo más cercano)
         self.f = f - self.fp[raiz] * (w0 - self.w[raiz])
 
+    # ---- guardar / cargar (para usar la proyección sin recalcularla)
+
+    def guardar(self, ruta):
+        """Guarda solo lo necesario para proyectar (nodos conectados)."""
+        i = self._nodos
+        np.savez_compressed(ruta, w=self.w[i], f=self.f[i], fp=self.fp[i],
+                            gprima=self.gprima[i], h=self.h[i], c=self.c,
+                            delta=self.delta, R=self.R, paso=self.malla.h)
+
+    @classmethod
+    def cargar(cls, ruta):
+        d = np.load(ruta)
+        p = cls.__new__(cls)
+        p.w, p.f, p.fp, p.gprima, p.h = d["w"], d["f"], d["fp"], d["gprima"], d["h"]
+        p.c, p.delta, p.R, p.paso = float(d["c"]), float(d["delta"]), float(d["R"]), float(d["paso"])
+        p.conectados = np.ones(len(p.w), dtype=bool)
+        p._nodos = np.arange(len(p.w))
+        p._arbol = cKDTree(np.column_stack([p.w.real, p.w.imag]))
+        return p
+
+    def distancia_a_malla(self, lat, lon):
+        """Distancia (en unidades de w) al nodo más cercano; sirve para avisar
+        si un punto cae fuera de la región donde se ajustó la proyección."""
+        w = np.atleast_1d(w_de(lat, lon))
+        d, _ = self._arbol.query(np.column_stack([w.real, w.imag]))
+        return d
+
     def _nodo_cercano(self, w):
         w = np.atleast_1d(w)
         _, k = self._arbol.query(np.column_stack([w.real, w.imag]))

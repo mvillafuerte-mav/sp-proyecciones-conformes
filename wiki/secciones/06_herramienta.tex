@@ -1,19 +1,34 @@
 % Responsable: Persona 3. ~100 palabras + tabla.
 \section{Herramienta para el cliente}
 
+La tabla~\ref{tab:comparativa} resume las cuatro opciones. Las columnas de
+distancias, k-means y vecinos se calcularon con las cabeceras municipales
+(Paso~5); k-means corresponde a $k = 20$ (mediana de diez semillas).
+
 \begin{table}[ht]
   \centering
-  \begin{tabular}{lccccc}
-    \toprule
-    Proyección & $\delta$ & Error máx.\ escala (\%) & Error mediana (\%) & Error P95 (\%) & Cambios k-means (\%) \\
-    \midrule
-    Mercator       & -- & -- & -- & -- & -- \\
-    Lambert INEGI  & -- & -- & -- & -- & -- \\
-    Óptima         & -- & -- & -- & -- & -- \\
-    \bottomrule
-  \end{tabular}
-  \caption{Comparación de las tres proyecciones. Fuente: elaboración propia.}
+  \footnotesize
+  \setlength{\tabcolsep}{4pt}
+  \input{tablas/tabla_comparativa}
+  \caption{Comparación de las proyecciones sobre México. El error máximo de
+    escala supone el mapa reescalado para centrar $\sigma$ en 1. El máximo de
+    la óptima (México) viene de pares que cruzan el Golfo de California.
+    Fuente: elaboración propia con datos del INEGI.}
   \label{tab:comparativa}
 \end{table}
 
-% Script: latlon_a_xy(lat, lon, proyeccion="recomendada") en src/proyecciones/conversion.py
+Para convertir coordenadas, el repositorio incluye la función
+\texttt{latlon\_a\_xy(lat, lon, proyeccion="recomendada")} en
+\texttt{src/proyecciones/conversion.py}. Recibe grados (números, arreglos o
+las columnas de un CSV) y devuelve $x, y$ en metros. La opción recomendada es
+la óptima sobre la envolvente convexa, cuyo modelo ya ajustado viene en el
+repositorio, así que no hace falta resolver nada; también acepta
+\texttt{"optima"}, \texttt{"lambert"} y \texttt{"mercator"}, y avisa si un
+punto queda fuera de la región. Desde la terminal:
+\begin{lstlisting}[basicstyle=\footnotesize\ttfamily]
+python -m proyecciones.conversion clientes.csv clientes_xy.csv
+\end{lstlisting}
+Por ejemplo, con la proyección recomendada la distancia en el plano entre la
+Ciudad de México y Monterrey es de 704.78~km, contra 705.93~km sobre la
+esfera ($-0.16\,\%$), y entre Monterrey y Mérida, de 1212.99~km contra
+1213.52~km ($-0.04\,\%$).

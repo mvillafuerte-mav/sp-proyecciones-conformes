@@ -21,11 +21,14 @@ La consigna completa está en [`docs/consigna.md`](docs/consigna.md).
 │   ├── distorsion.py     Factor de escala σ y distorsión δ
 │   ├── dirichlet.py      Solver de Laplace + proyección óptima
 │   ├── datos.py          Contorno de México y datos de INEGI
+│   ├── verificacion.py   Comparación con PROJ y con el elipsoide
+│   ├── efecto.py         Efecto en distancias, k-means, vecinos y áreas
+│   ├── figuras.py        Tabla comparativa y figuras
 │   └── conversion.py     Herramienta para el cliente: (lat, lon) -> (x, y)
 ├── notebooks/            Pruebas y exploración (no va al documento)
 ├── data/raw/             Datos descargados (no se suben a git)
 ├── data/processed/       Datos limpios (no se suben a git)
-├── resultados/           Figuras y tablas generadas por el código
+├── resultados/           Tablas, figuras y modelos generados por el código
 ├── tests/                Pruebas (comparación con pyproj, caso conocido)
 └── docs/                 Consigna y notas del equipo
 ```
@@ -81,9 +84,24 @@ python -m proyecciones.distorsion     # δ y errores de escala (Paso 3)
 python -m proyecciones.verificacion   # comparación con PROJ y con GRS80
 python -m proyecciones.dirichlet      # proyección óptima (Paso 4) y su validación
 python -m proyecciones.efecto         # efecto en los datos: distancias, k-means, vecinos, áreas (Paso 5)
+python -m proyecciones.figuras        # tabla comparativa y las 3 figuras de la wiki
 ```
 
-Las tablas quedan en `resultados/tablas/`.
+Las tablas quedan en `resultados/tablas/`, las figuras en `wiki/figuras/` y la
+tabla comparativa en `wiki/tablas/`.
+
+## Herramienta para el cliente
+
+Convierte (lat, lon) a (x, y) en metros. No necesita descargar datos: usa los
+modelos ya ajustados de `resultados/modelos/`.
+
+```bash
+cd src
+python -m proyecciones.conversion                               # ejemplo con 3 ciudades
+python -m proyecciones.conversion clientes.csv clientes_xy.csv   # CSV con columnas lat, lon
+```
+
+Desde Python: `from proyecciones.conversion import latlon_a_xy`.
 
 ## Compilar la wiki
 
