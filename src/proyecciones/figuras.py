@@ -4,7 +4,7 @@
 
 Requiere haber corrido antes distorsion, dirichlet y efecto (lee sus tablas).
 Escribe:
-  wiki/tablas/tabla_comparativa.tex
+  wiki/tablas/tabla_comparativa.tex, tabla_elipsoide.tex
   wiki/figuras/fig1_reticula.pdf, fig2_sigma.pdf, fig3_errores.pdf
   (y copias .png en resultados/figuras/)
 """
@@ -95,6 +95,29 @@ def tabla_comparativa():
     TEX_TABLAS.mkdir(parents=True, exist_ok=True)
     (TEX_TABLAS / "tabla_comparativa.tex").write_text("\n".join(lineas) + "\n", encoding="utf-8")
     return t
+
+
+def tabla_elipsoide():
+    """Error contra la geodésica sobre GRS80 y umbral de distancia (50 m)."""
+    el = pd.read_csv(TABLAS / "efecto_elipsoide.csv").set_index("proyeccion")
+    filas = [("Mercator", "Mercator"), ("EPSG:6372 (elipsoide)", "EPSG:6372 (oficial)"),
+             ("Óptima", "Óptima (México)"),
+             ("Óptima envolvente", "Óptima (envolvente)")]
+    lineas = [
+        r"\begin{tabular}{lrrrrr}",
+        r"\toprule",
+        r" & \multicolumn{3}{c}{Error contra GRS80 (\%)} & \multicolumn{2}{c}{Umbral 50~m (km)} \\",
+        r"\cmidrule(lr){2-4}\cmidrule(lr){5-6}",
+        r"Proyección & mediana & P95 & máx. & típico & peor \\",
+        r"\midrule",
+    ]
+    for clave, nombre in filas:
+        r = el.loc[clave]
+        lineas.append(f"{nombre} & {r['mediana_%']:.2f} & {r['p95_%']:.2f} & {r['max_%']:.2f} & "
+                      f"{r['umbral_tipico_km']:.1f} & {r['umbral_peor_km']:.1f} \\\\")
+    lineas += [r"\bottomrule", r"\end{tabular}"]
+    TEX_TABLAS.mkdir(parents=True, exist_ok=True)
+    (TEX_TABLAS / "tabla_elipsoide.tex").write_text("\n".join(lineas) + "\n", encoding="utf-8")
 
 
 # ------------------------------------------------------------ figura 1
@@ -205,6 +228,7 @@ def fig_errores():
 
 if __name__ == "__main__":
     print(tabla_comparativa().round(4).to_string(index=False))
+    tabla_elipsoide()
     fig_reticula()
     fig_sigma()
     fig_errores()

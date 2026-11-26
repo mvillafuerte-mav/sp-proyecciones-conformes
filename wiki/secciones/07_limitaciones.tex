@@ -7,10 +7,23 @@ Todo el análisis usa la esfera, cuya distancia difiere de la geodésica sobre
 el elipsoide GRS80 hasta en $0.49\,\%$ (sección~\ref{sec:proj}), más que el
 error de la proyección óptima. Medido contra la geodésica real, el error
 típico (mediana) es de $0.29\,\%$ con EPSG:6372 y de $0.15\,\%$ con la óptima
-sobre la envolvente, pero el máximo es parecido: $0.72\,\%$ y $0.68\,\%$. Para
+sobre la envolvente, pero el máximo es parecido: $0.72\,\%$ y $0.68\,\%$
+(tabla~\ref{tab:elipsoide}). Para
 tener la cota de $0.2\,\%$ en la realidad hay que resolver el mismo problema
 sobre el elipsoide, cambiando $q$ por la latitud isométrica del elipsoide y
 $R\cos\lat$ por el radio del paralelo \cite{snyder1987}; el método no cambia.
+
+\begin{table}[ht]
+  \centering
+  \footnotesize
+  \input{tablas/tabla_elipsoide}
+  \caption{Error en distancias contra la geodésica sobre el elipsoide GRS80,
+    en los mismos pares de cabeceras del Paso~5, y distancia a partir de la
+    cual el error de la proyección supera un error de posición de 50~m
+    (umbral $= 50~\text{m}/\text{error}$, con el error típico y con el
+    máximo). Fuente: elaboración propia con datos del INEGI.}
+  \label{tab:elipsoide}
+\end{table}
 
 \subsection{Ángulos sí, áreas no}
 Una proyección conforme multiplica las áreas por $\sigma^2$: con Lambert el
