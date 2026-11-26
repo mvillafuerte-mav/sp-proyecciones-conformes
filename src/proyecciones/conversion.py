@@ -57,19 +57,21 @@ def latlon_a_xy(lat, lon, proyeccion="recomendada"):
     if proyeccion == "recomendada":
         proyeccion = "optima_envolvente"
     if proyeccion == "mercator":
-        return mercator(lat, lon)
-    if proyeccion == "lambert":
-        return lambert(lat, lon)
-    if proyeccion not in ARCHIVOS:
+        x, y = mercator(lat, lon)
+    elif proyeccion == "lambert":
+        x, y = lambert(lat, lon)
+    elif proyeccion in ARCHIVOS:
+        m = _modelo(proyeccion)
+        lejos = m.distancia_a_malla(lat, lon) > DISTANCIA_AVISO
+        if np.any(lejos):
+            warnings.warn(f"{int(lejos.sum())} punto(s) quedan fuera de la región "
+                          "donde se ajustó la proyección; ahí no hay garantía de escala.")
+        x, y = m.proyectar(lat, lon)
+    else:
         raise ValueError(f"proyección desconocida: {proyeccion!r}")
-    m = _modelo(proyeccion)
-    lejos = m.distancia_a_malla(lat, lon) > DISTANCIA_AVISO
-    if np.any(lejos):
-        warnings.warn(f"{int(lejos.sum())} punto(s) quedan fuera de la región "
-                      "donde se ajustó la proyección; ahí no hay garantía de escala.")
-    x, y = m.proyectar(lat, lon)
+    x, y = np.asarray(x, dtype=float), np.asarray(y, dtype=float)
     if lat.ndim == 0:
-        return float(x[0]), float(y[0])
+        return float(x.ravel()[0]), float(y.ravel()[0])
     return x.reshape(lat.shape), y.reshape(lat.shape)
 
 

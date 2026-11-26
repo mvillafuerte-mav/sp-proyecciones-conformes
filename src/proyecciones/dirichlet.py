@@ -446,6 +446,12 @@ if __name__ == "__main__":
 
     p_env = ProyeccionOptima(*contorno_envolvente(lat_c, lon_c), h=0.001)
 
+    # modelos ajustados para la herramienta del cliente y la Figura 2
+    modelos = RAIZ / "resultados" / "modelos"
+    modelos.mkdir(parents=True, exist_ok=True)
+    p.guardar(modelos / "optima_mexico.npz")
+    p_env.guardar(modelos / "optima_envolvente.npz")
+
     i_min = int(np.argmin(p.h - ln_cos_lat(p.w)))
     lat_min, lon_min = latlon_de(p.w[i_min])
     res = {

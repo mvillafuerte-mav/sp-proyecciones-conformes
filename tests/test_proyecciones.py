@@ -117,5 +117,6 @@ def test_conversion_con_modelos_guardados():
     x, y = latlon_a_xy(lat, lon)
     d = np.hypot(x[1] - x[0], y[1] - y[0])
     assert abs(d / haversine(lat[0], lon[0], lat[1], lon[1]) - 1) < 0.002
-    x0, y0 = latlon_a_xy(19.4326, -99.1332)
-    assert isinstance(x0, float)
+    for p in ("recomendada", "lambert", "mercator"):
+        x0, y0 = latlon_a_xy(19.4326, -99.1332, p)
+        assert type(x0) is float and type(y0) is float
