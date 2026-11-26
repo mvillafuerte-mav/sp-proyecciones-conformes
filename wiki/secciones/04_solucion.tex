@@ -3,14 +3,76 @@
 \section{Solución del problema del cliente}
 
 \subsection{Paso 1. Mercator}
-% f(w) = R w, sigma = sec(phi). Mercator como logaritmo de la estereográfica.
+
+La proyección más sencilla es tomar $f(w) = R\,w$, es decir,
+\begin{equation}
+  x = R\,\lon, \qquad y = R\,q(\lat) = R\ln\tan\!\left(\frac{\pi}{4}+\frac{\lat}{2}\right).
+  \label{eq:mercator}
+\end{equation}
+Esta es la proyección de Mercator. Como $f' = R \neq 0$, es conforme, y por
+\eqref{eq:sigma} su factor de escala es
+\begin{equation}
+  \sigma_{\mathrm{M}}(\lat) = \frac{R}{R\cos\lat} = \sec\lat .
+  \label{eq:sigma_mercator}
+\end{equation}
+El factor no depende de la longitud y crece con la latitud. En México va de
+$\sec(14.5^\circ) \approx 1.033$ en la frontera con Guatemala a
+$\sec(32.7^\circ) \approx 1.189$ en Baja California: la misma distancia real
+se ve alrededor de 15\,\% más larga en el norte que en el sur. Esto confirma
+la sospecha de los analistas del cliente.
+
+Mercator también sale de la proyección estereográfica. De
+$\zeta = R\,e^{iw}$ (sección anterior) se despeja
+\begin{equation}
+  R\,w = -iR\,\log\!\left(\frac{\zeta}{R}\right),
+  \label{eq:mercator_log}
+\end{equation}
+así que Mercator es, salvo una rotación de $-90^\circ$ y un factor $R$, el
+logaritmo complejo de la proyección estereográfica. La rama del logaritmo
+corresponde a elegir en qué meridiano se corta el mapa.
 
 \subsection{Paso 2. Cónica Conforme de Lambert}
+
+Ahora tomemos $f(w) = R F e^{inw}$ con constantes $0 < n < 1$ y $F > 0$. Es
+analítica y $f'(w) = i n R F e^{inw} \neq 0$, así que es conforme. En forma
+polar,
 \begin{equation}
-  \sigma(\lat) = \frac{n F e^{-n q(\lat)}}{\cos\lat}, \qquad
-  n = \frac{\ln(\cos\lat_1/\cos\lat_2)}{q(\lat_2) - q(\lat_1)}
+  z = \rho\, e^{i n \lon}, \qquad \rho(\lat) = R F e^{-n q(\lat)} :
+  \label{eq:lambert_polar}
+\end{equation}
+los meridianos se vuelven rayos y los paralelos, arcos de círculo. Además,
+$e^{inw}$ enrolla la franja $-\pi < \lon \le \pi$ del plano $w$ en un sector
+de ángulo $2\pi n$, que es justo un cono desenrollado. Como
+$|e^{inw}| = e^{-nq}$, se tiene $|f'| = nRF\,e^{-nq}$ y
+\begin{equation}
+  \sigma_{\mathrm{L}}(\lat) = \frac{n F e^{-n q(\lat)}}{\cos\lat}, \qquad
+  \ln\sigma_{\mathrm{L}} = \ln(nF) - n\,q(\lat) - \ln\cos\lat .
   \label{eq:lambert}
 \end{equation}
+Las dos constantes se fijan pidiendo escala exacta en dos paralelos estándar
+$\lat_1$ y $\lat_2$. La condición $\sigma(\lat_1) = \sigma(\lat_2)$ da
+$-n q(\lat_1) - \ln\cos\lat_1 = -n q(\lat_2) - \ln\cos\lat_2$, de donde
+\begin{equation}
+  n = \frac{\ln(\cos\lat_1/\cos\lat_2)}{q(\lat_2) - q(\lat_1)},
+  \qquad
+  F = \frac{\cos\lat_1\, e^{n q(\lat_1)}}{n},
+  \label{eq:lambert_n}
+\end{equation}
+donde $F$ se eligió para que $\sigma(\lat_1) = \sigma(\lat_2) = 1$. Con los
+paralelos de INEGI, $\lat_1 = 17.5^\circ$ y $\lat_2 = 29.5^\circ$, resulta
+$n \approx 0.3995$.
+
+Entre los dos paralelos la escala es menor que 1. Derivando \eqref{eq:lambert}
+con $dq/d\lat = \sec\lat$,
+\begin{equation}
+  \frac{d\ln\sigma_{\mathrm{L}}}{d\lat} = \frac{\sin\lat - n}{\cos\lat} = 0
+  \quad\Longleftrightarrow\quad \sin\lat = n ,
+  \label{eq:lambert_min}
+\end{equation}
+así que el mínimo de $\sigma_{\mathrm{L}}$ está en $\lat = \arcsin n \approx
+23.5^\circ$, a la mitad del país. Los casos extremos ayudan a ubicar a Lambert:
+cuando $n \to 0$ se recupera Mercator (salvo constantes) y con $n = 1$, la
+estereográfica $R\,e^{iw}$.
 
 \subsection{Paso 3. Medir la distorsión}
 \begin{equation}
@@ -20,11 +82,59 @@
 
 \subsection{Paso 4. Proyección óptima de Chebyshev}
 \subsubsection*{Planteamiento}
+
+Mercator y Lambert son dos funciones analíticas particulares. La pregunta del
+cliente es cuál de \emph{todas} las funciones analíticas da la menor distorsión
+$\dist$ sobre México. Tomando logaritmo en \eqref{eq:sigma},
+\begin{equation}
+  \ln\sigma = h - \ln(R\cos\lat), \qquad h = \ln|f'| ,
+  \label{eq:lnsigma}
+\end{equation}
+donde $h$ es armónica en $\region$ por \eqref{eq:lnfprima}. El segundo término
+no depende de la proyección: es la curvatura de la esfera. Con
+$\cos\lat = \operatorname{sech} q$,
+\begin{equation}
+  \nabla^2_w \ln\sigma = \frac{d^2}{dq^2}\ln\cosh q = \operatorname{sech}^2 q
+  = \cos^2\lat > 0 ,
+  \label{eq:subarmonica}
+\end{equation}
+así que $\ln\sigma$ \emph{no} es armónica, sino subarmónica, para cualquier
+proyección conforme. Por el principio del máximo, su máximo siempre está en
+la frontera $\frontera$.
+
+El teorema de Chebyshev (1856), demostrado por Milnor \cite{milnor1969}, dice
+que la proyección óptima es la que tiene escala constante en la frontera. Por
+\eqref{eq:lnsigma}, pedir $\sigma = e^{c}$ en $\frontera$ es lo mismo que
 \begin{equation}
   \nabla^2 h = 0 \text{ en } \region, \qquad
-  h = \ln(R\cos\lat) + c \text{ en } \frontera
+  h = \ln(R\cos\lat) + c \text{ en } \frontera ,
   \label{eq:dirichlet}
 \end{equation}
+que es un problema de Dirichlet con solución única $h^*$. La constante $c$
+solo multiplica el mapa por $e^{c}$ y no cambia $\dist$.
+
+\paragraph{Por qué es óptima.} Sea $\sigma^*$ el factor de la proyección de
+Chebyshev. Por \eqref{eq:subarmonica}, el máximo de $\ln\sigma^*$ es $c$ y se
+alcanza en $\frontera$; sea $m^*$ su mínimo, alcanzado en un punto $p$, de modo
+que $\delta^* = c - m^*$. Cualquier otra proyección conforme tiene
+$\ln\sigma = \ln\sigma^* + u$ con $u = h - h^*$ armónica. Si $b \in \frontera$
+es donde $u$ alcanza su máximo en la frontera, el principio del máximo da
+$u(b) \geq u(p)$, y entonces
+\begin{equation}
+  \delta \;\geq\; \ln\sigma(b) - \ln\sigma(p)
+  = \bigl(c + u(b)\bigr) - \bigl(m^* + u(p)\bigr)
+  \;\geq\; c - m^* = \delta^* .
+  \label{eq:optimalidad}
+\end{equation}
+La igualdad exige $u(b) = u(p)$, es decir, que $u$ alcance su máximo en un
+punto interior, lo que solo pasa si $u$ es constante. La proyección de
+Chebyshev es entonces la única óptima, salvo escala, rotación y traslación
+\cite{milnor1969,bermejo2005}.
+
+Para construirla, la conjugada armónica $\tilde h^*$ da
+$f' = \exp(h^* + i\tilde h^*)$, y como $\region$ es simplemente conexa,
+$f(w) = \int_{w_0}^{w} f'(\xi)\,d\xi$ no depende del camino. Ese cálculo es
+numérico y se describe a continuación.
 
 \subsubsection*{Solución numérica}
 % Contorno en el plano w, método, conjugada, integración, delta de la óptima.

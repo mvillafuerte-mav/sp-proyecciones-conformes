@@ -2,20 +2,127 @@
 \section{Fundamentos teóricos}
 
 \subsection{Funciones analíticas y ecuaciones de Cauchy--Riemann}
-% f = u + iv, u_x = v_y, u_y = -v_x. df = f'(z) dz. Contraejemplo z^2.
+
+Una función $f(z) = u(x,y) + i\,v(x,y)$ es analítica en una región si tiene
+derivada compleja en cada punto. Esto equivale a que $u$ y $v$ sean
+diferenciables y cumplan las ecuaciones de Cauchy--Riemann
+\begin{equation}
+  u_x = v_y, \qquad u_y = -v_x ,
+  \label{eq:cr}
+\end{equation}
+y en ese caso $f'(z) = u_x + i\,v_x$ \cite{marsden1999,ahlfors1979}.
+
+La consecuencia geométrica es lo que nos interesa. Por \eqref{eq:cr}, la
+matriz jacobiana de $(x,y)\mapsto(u,v)$ es
+\begin{equation}
+  J = \begin{pmatrix} u_x & -v_x \\ v_x & u_x \end{pmatrix}
+    = |f'(z)| \begin{pmatrix} \cos\theta & -\sin\theta \\ \sin\theta & \cos\theta \end{pmatrix},
+  \qquad \theta = \arg f'(z),
+  \label{eq:jacobiana}
+\end{equation}
+es decir, una rotación seguida de un escalamiento. Dicho de otra forma,
+$df = f'(z)\,dz$: todo vector tangente en $z$ gira el mismo ángulo $\theta$ y
+se estira el mismo factor $|f'(z)|$, sin importar su dirección. Si
+$f'(z) \neq 0$, dos curvas que se cruzan en $z$ con cierto ángulo llegan a
+cruzarse con el mismo ángulo: $f$ es \emph{conforme} en $z$. La condición
+$f' \neq 0$ no se puede quitar: $f(z) = z^2$ manda el rayo $\arg z = \alpha$
+al rayo de ángulo $2\alpha$, así que en el origen, donde $f'(0)=0$, duplica los
+ángulos.
 
 \subsection{Funciones armónicas y problema de Dirichlet}
-% Conjugada armónica, ln|f'| = Re(ln f'), existencia y unicidad, principio del máximo.
+
+Una función real $h$ es armónica si $\nabla^2 h = h_{xx} + h_{yy} = 0$.
+Derivando \eqref{eq:cr} se obtiene $u_{xx} = v_{yx} = -u_{yy}$, así que la
+parte real y la parte imaginaria de una función analítica son armónicas. Al
+revés, en una región simplemente conexa toda $h$ armónica es la parte real de
+una función analítica $h + i\tilde h$; la función $\tilde h$ es la
+\emph{conjugada armónica} de $h$ y es única salvo una constante
+\cite{ahlfors1979}.
+
+El caso que usaremos es el siguiente. Si $f$ es analítica y $f' \neq 0$ en una
+región simplemente conexa, existe una rama analítica de $\log f'$, y
+\begin{equation}
+  \log f'(w) = \ln|f'(w)| + i\arg f'(w)
+  \quad\Longrightarrow\quad
+  \nabla^2 \ln|f'| = 0 .
+  \label{eq:lnfprima}
+\end{equation}
+Es decir, el logaritmo del factor de escala de un mapeo conforme es armónico, y
+su conjugada es el ángulo de rotación $\arg f'$.
+
+Dados una región acotada $\Omega$ y valores $g$ continuos en su frontera, el
+\emph{problema de Dirichlet} pide $h$ armónica en $\Omega$ con $h = g$ en
+$\partial\Omega$. Los dos resultados que necesitamos son:
+\begin{itemize}
+  \item \textbf{Principio del máximo.} Una función armónica no constante en
+    $\Omega$ alcanza su máximo y su mínimo solo en $\partial\Omega$. Si $s$ es
+    \emph{subarmónica} ($\nabla^2 s \geq 0$), al menos su máximo está en
+    $\partial\Omega$ \cite{marsden1999}.
+  \item \textbf{Existencia y unicidad.} Si la frontera es una curva de Jordan
+    (como el contorno de México continental), la solución existe; es única
+    porque la diferencia de dos soluciones es armónica, vale cero en
+    $\partial\Omega$ y, por el principio del máximo, es cero en todo $\Omega$
+    \cite{ahlfors1979}.
+\end{itemize}
 
 \subsection{Esfera de Riemann y proyección estereográfica}
 
-\subsection{Coordenada compleja sobre la esfera}
-% Ejemplo de ecuación numerada:
+La esfera de Riemann identifica el plano complejo extendido
+$\mathbb{C}\cup\{\infty\}$ con una esfera mediante la proyección
+estereográfica. Para una esfera de radio $R$, un punto de latitud $\lat$ y
+longitud $\lon$ se proyecta desde el polo sur sobre el plano del ecuador. Por
+triángulos semejantes, su distancia al centro es
 \begin{equation}
-  ds^2 = R^2\cos^2\lat\,|dw|^2, \qquad
-  \sigma(w) = \frac{|f'(w)|}{R\cos\lat}
+  r(\lat) = \frac{R\cos\lat}{1+\sin\lat} = R\tan\!\left(\frac{\pi}{4}-\frac{\lat}{2}\right),
+  \qquad \zeta = r(\lat)\,e^{i\lon} .
+  \label{eq:estereo}
+\end{equation}
+Como $dr/d\lat = -R/(1+\sin\lat)$, un desplazamiento sobre la esfera de
+longitud $ds$ se proyecta con longitud $|d\zeta| = ds/(1+\sin\lat)$ en
+\emph{cualquier} dirección. La proyección estereográfica escala igual en todas
+direcciones, así que es conforme.
+
+\subsection{Coordenada compleja sobre la esfera}
+
+En latitud y longitud, la métrica de la esfera es
+$ds^2 = R^2(d\lat^2 + \cos^2\lat\, d\lon^2)$. Los dos términos tienen pesos
+distintos, y por eso un grado de longitud mide menos que uno de latitud. Para
+igualarlos se define la \emph{latitud isométrica}
+\begin{equation}
+  q(\lat) = \ln\tan\!\left(\frac{\pi}{4}+\frac{\lat}{2}\right),
+  \qquad \frac{dq}{d\lat} = \frac{1}{2\sin(\frac{\pi}{4}+\frac{\lat}{2})\cos(\frac{\pi}{4}+\frac{\lat}{2})}
+  = \frac{1}{\cos\lat} ,
+  \label{eq:qiso}
+\end{equation}
+que lleva $(-\pi/2,\pi/2)$ a toda la recta real y cumple
+$\cos\lat = \operatorname{sech} q$. Con $d\lat = \cos\lat\,dq$ y la coordenada
+compleja $w = \lon + i\,q$ queda
+\begin{equation}
+  ds^2 = R^2\cos^2\lat\,(d\lon^2 + dq^2) = R^2\cos^2\lat\,|dw|^2 .
+  \label{eq:metrica}
+\end{equation}
+En la coordenada $w$, la esfera se ve como el plano con un factor que depende
+solo del punto y no de la dirección (se dice que la métrica es
+\emph{conformemente plana}).
+
+Toda proyección cartográfica es una función $z = x + iy = f(w)$. Si $f$ es
+analítica con $f'\neq 0$, entonces $|dz| = |f'(w)|\,|dw|$, y por
+\eqref{eq:metrica} el factor de escala, es decir, la longitud en el mapa
+dividida entre la longitud real, es
+\begin{equation}
+  \sigma(w) = \frac{|dz|}{ds} = \frac{|f'(w)|}{R\cos\lat},
   \label{eq:sigma}
 \end{equation}
+igual en todas direcciones: la proyección es conforme. El recíproco también
+vale: una proyección conforme que conserva la orientación, escrita en la
+coordenada $w$, cumple las ecuaciones de Cauchy--Riemann
+\cite{snyder1987,milnor1969}. Por lo tanto, \emph{elegir una proyección
+conforme es lo mismo que elegir una función analítica $f$}, y todo lo que
+falta es decidir cuál.
+
+Un ejemplo: como $\tan(\pi/4-\lat/2) = e^{-q}$, la proyección estereográfica
+\eqref{eq:estereo} se escribe $\zeta = R\,e^{-q}e^{i\lon} = R\,e^{iw}$, que es
+analítica.
 
 % Figura 1 (Persona 3): retícula de México bajo dos proyecciones.
 % \begin{figure}[ht]
