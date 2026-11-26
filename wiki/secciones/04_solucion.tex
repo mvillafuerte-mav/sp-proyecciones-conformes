@@ -75,10 +75,37 @@ cuando $n \to 0$ se recupera Mercator (salvo constantes) y con $n = 1$, la
 estereográfica $R\,e^{iw}$.
 
 \subsection{Paso 3. Medir la distorsión}
+
+Para comparar proyecciones se usa la oscilación de $\ln\sigma$ sobre la región,
 \begin{equation}
-  \dist = \max_{\region} \ln\sigma - \min_{\region} \ln\sigma
+  \dist = \max_{\region} \ln\sigma - \min_{\region} \ln\sigma ,
   \label{eq:delta}
 \end{equation}
+que no cambia si el mapa se multiplica por una constante. Su significado es
+directo: $e^{\delta}$ es el cociente entre la mayor y la menor escala del mapa,
+o sea, cuánto más se estira una distancia en la zona peor representada que en
+la mejor. Si el mapa se reescala para que $\sigma$ quede entre $e^{-\delta/2}$
+y $e^{\delta/2}$, el error máximo de escala es $100\,(e^{\delta/2}-1)\,\%$.
+Esta es la convención que usamos en la tabla comparativa.
+
+En Mercator y en Lambert, $\sigma$ solo depende de la latitud. Como México
+continental ocupa todas las latitudes entre $14.53^\circ$ y $32.72^\circ$,
+$\delta$ se obtiene de la función de una variable en ese intervalo. Además lo
+calculamos evaluando $\sigma$ en una malla de $0.05^\circ$ dentro del contorno
+y sobre el contorno mismo, y los resultados coinciden:
+\begin{itemize}
+  \item \textbf{Mercator.} $\ln\sigma = -\ln\cos\lat$ crece con la latitud,
+    así que $\sigma$ va de $1.0331$ en el extremo sur a $1.1886$ en el norte y
+    $\delta_{\mathrm{M}} = 0.140$. Aun reescalado, el error máximo es de
+    $7.3\,\%$; tal como se usa en los mapas web (escala exacta en el ecuador),
+    llega a $18.9\,\%$.
+  \item \textbf{Lambert de INEGI.} Por \eqref{eq:lambert_min}, $\sigma$ baja a
+    $0.9945$ en $23.5^\circ$\,N y sube a $1.0077$ en el extremo norte (en el
+    extremo sur vale $1.0067$), así que $\delta_{\mathrm{L}} = 0.0132$. El error
+    máximo es de $0.66\,\%$ reescalado y de $0.77\,\%$ con la escala de INEGI.
+\end{itemize}
+Lambert distorsiona unas 10 veces menos que Mercator. Lo que queda por ver es
+cuánto se puede bajar todavía ese $0.0132$; ese es el Paso 4.
 
 \subsection{Paso 4. Proyección óptima de Chebyshev}
 \label{sec:paso4}
