@@ -1,4 +1,20 @@
 % Responsable: Persona 4. ~150 palabras. Cada aplicación con una referencia revisada por pares.
 \section{Desarrollos recientes y otras aplicaciones}
-% Parametrización conforme (gráficos, neuroimagen), mapeos conformes discretos,
-% Joukowski / Schwarz--Christoffel.
+
+Aplanar una superficie curva sin deformar las formas es un problema que
+aparece en muchas áreas. En gráficos por computadora, los mapas conformes por
+mínimos cuadrados se usan para pegar texturas sobre modelos 3D
+\cite{levy2002}, y en neuroimagen la corteza cerebral se aplana de forma
+conforme para comparar cerebros de distintas personas
+\cite{gu2004,hurdal2004}. Para superficies dadas como mallas de triángulos
+existe una teoría de mapeos conformes discretos: el empaquetamiento de
+círculos converge al mapeo de Riemann \cite{rodin1987}, y la equivalencia
+conforme de mallas permite aplanarlas con distorsión controlada
+\cite{springborn2008}. En física e ingeniería, la transformación de Joukowski
+convierte el flujo alrededor de un cilindro en el flujo alrededor de un perfil
+alar, y la de Schwarz--Christoffel resuelve problemas de potencial
+(electrostática, flujo) en regiones poligonales \cite{driscoll2002}. Los
+métodos numéricos también siguen avanzando: los solucionadores
+\emph{lightning}, basados en funciones racionales, resuelven la ecuación de
+Laplace con precisión de máquina en regiones con esquinas \cite{gopal2019},
+justo el tipo de región que complicó el ajuste polinomial en este trabajo.

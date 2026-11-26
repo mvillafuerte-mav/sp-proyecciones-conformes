@@ -2,7 +2,41 @@
 \section{Limitaciones y alcance de validez}
 
 \subsection{Modelo esférico frente al elipsoide}
+INEGI trabaja sobre el elipsoide GRS80. Usar la esfera casi no cambia la
+distorsión de Lambert ($\delta = 0.01312$ en el elipsoide contra $0.01319$),
+pero sí la referencia: la distancia haversine difiere de la geodésica sobre el
+elipsoide entre $-0.19\,\%$ y $+0.49\,\%$ (sección~\ref{sec:proj}), más que el
+error de la proyección óptima. Para aprovechar toda la ganancia hay que
+resolver el mismo problema sobre el elipsoide, cambiando $q$ por la latitud
+isométrica del elipsoide y $R\cos\lat$ por el radio del paralelo
+\cite{snyder1987}; el método no cambia.
+
 \subsection{Ángulos sí, áreas no}
+Una proyección conforme multiplica las áreas por $\sigma^2$: con Lambert el
+efecto llega a $1.6\,\%$ y con la óptima a $0.2\,\%$. Para conteos por área o
+mapas de densidad que deban ser exactos conviene una proyección equivalente,
+como la cónica equivalente de Albers \cite{snyder1987}, o calcular
+directamente sobre la esfera (por ejemplo, con un BallTree con métrica
+haversine).
+
+\subsection{La cota solo vale dentro de la región}
+La garantía de Chebyshev se refiere a $\region$. Para distancias cuyo recorrido
+sale de la región, como las que cruzan el Golfo de California, la óptima
+sobre México puede ser peor que Lambert ($1.8\,\%$ contra $0.6\,\%$). La región
+debe elegirse según los análisis: la envolvente convexa cubre cualquier par a
+cambio de duplicar $\delta$.
+
 \subsection{Límites teóricos}
-% Riemann (existencia sin fórmula), Liouville (dim >= 3 solo Möbius).
+El teorema de Riemann garantiza que existe un mapeo conforme entre regiones
+simplemente conexas, pero no da una fórmula \cite{ahlfors1979}; por eso la
+proyección óptima se obtuvo numéricamente. Además, el método es propio del
+plano: por el teorema de Liouville, en dimensión 3 o mayor los únicos mapeos
+conformes son las transformaciones de Möbius \cite{blair2000}.
+
 \subsection{Costo práctico}
+Una proyección a la medida no viene en PROJ ni en los sistemas de información
+geográfica comunes: el cliente depende del script del repositorio y de sus
+modelos ajustados, y sus coordenadas no se pueden mezclar con las de otros
+sistemas que usan EPSG:6372. La ganancia frente a Lambert (de $0.66\,\%$ a
+$0.19\,\%$ en el peor caso) solo vale ese costo cuando el análisis es sensible a
+errores de ese tamaño.
