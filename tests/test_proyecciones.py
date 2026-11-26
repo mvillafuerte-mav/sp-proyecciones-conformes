@@ -111,10 +111,10 @@ def test_conversion_con_modelos_guardados():
     from proyecciones.conversion import latlon_a_xy
     from proyecciones.datos import haversine
     lat, lon = np.array([19.4326, 25.6866]), np.array([-99.1332, -100.3161])
-    for p in ("recomendada", "optima", "lambert", "mercator"):
+    for p in ("recomendada", "epsg6372", "optima_envolvente", "optima", "lambert", "mercator"):
         x, y = latlon_a_xy(lat, lon, p)
         assert x.shape == (2,)
-    x, y = latlon_a_xy(lat, lon)
+    x, y = latlon_a_xy(lat, lon, "optima_envolvente")
     d = np.hypot(x[1] - x[0], y[1] - y[0])
     assert abs(d / haversine(lat[0], lon[0], lat[1], lon[1]) - 1) < 0.002
     for p in ("recomendada", "lambert", "mercator"):
@@ -129,3 +129,11 @@ def test_conversion_con_nan_y_formas():
         assert np.isfinite(x[0]) and np.isnan(x[1]) and np.isnan(y[1])
     x, y = latlon_a_xy(np.array([[19.4, 20.0]]), np.array([[-99.1, -100.0]]))
     assert x.shape == (1, 2)
+
+
+def test_epsg6372_igual_a_proj():
+    from pyproj import Transformer
+    from proyecciones.conversion import latlon_a_xy
+    x, y = latlon_a_xy(19.4326, -99.1332)
+    X, Y = Transformer.from_crs(4326, 6372, always_xy=True).transform(-99.1332, 19.4326)
+    assert abs(x - X) < 1e-6 and abs(y - Y) < 1e-6

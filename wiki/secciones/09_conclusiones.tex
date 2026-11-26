@@ -2,9 +2,43 @@
 \section{Conclusiones y recomendaciones al cliente}
 
 \subsection{Respuesta a las preguntas de la consultoría}
-% 1. Cómo ayuda el análisis complejo.
-% 2. Qué se gana frente a una proyección de catálogo o fuerza bruta.
-% 3. Límites del método y qué usar cuando deja de aplicar.
+
+\textbf{¿Cómo ayuda el análisis complejo?} Convierte una pregunta de geometría
+y datos en un problema bien planteado. Con la coordenada $w$, toda proyección
+conforme es una función analítica, el logaritmo de su escala es armónico y la
+mejor proyección es la solución de un problema de Dirichlet, que existe, es
+única y se calcula en menos de un segundo. Además da una cota: ninguna
+proyección conforme de México tiene $\delta$ menor que $0.00184$, así que se
+sabe cuánto le falta a cada opción.
+
+\textbf{¿Qué se gana frente a una proyección de catálogo o la fuerza bruta?}
+Frente a Mercator la distorsión baja 76 veces, y frente a Lambert 7 veces; en
+distancias reales, el error típico queda en la mitad del de Lambert. Frente a
+calcular la geodésica de cada par, proyectar una vez conserva los algoritmos
+rápidos del plano (árboles k-d, k-means) con un error acotado y conocido.
+
+\textbf{¿Cuáles son los límites?} La garantía vale dentro de la región elegida
+y sobre la esfera: fuera de la región el error puede llegar a $1.8\,\%$, y
+contra el elipsoide, a $0.7\,\%$. Las áreas cambian por $\sigma^2$ y una proyección a la medida
+no está en el software estándar. Para densidades exactas conviene una
+proyección equivalente, y para distancias exactas, calcular sobre el
+elipsoide (sección~\ref{sec:limitaciones}).
 
 \subsection{Recomendación}
-% Qué proyección usar y a partir de qué distancia el error importa.
+\label{sec:recomendacion}
+
+Con un error de posición típico de 50~m en los datos, el error de cada
+proyección empieza a dominar a partir de cierta distancia:
+\begin{enumerate}
+  \item \textbf{Dejar Mercator} para cualquier análisis de distancias: su
+    error supera los 50~m desde distancias de 0.8~km.
+  \item \textbf{Usar EPSG:6372 como proyección de trabajo.} Es la oficial, está
+    en todo sistema de información geográfica y su error supera los 50~m solo
+    a partir de 17~km (7~km en el peor caso). Para agrupamientos y vecinos
+    locales es despreciable.
+  \item \textbf{Usar la óptima sobre la envolvente} (sección~\ref{sec:herramienta})
+    cuando importe el error típico en distancias largas, como en rutas: el
+    umbral sube a 33~km.
+  \item Si se necesita una cota de $0.2\,\%$ para cualquier par, el siguiente
+    paso es resolver el mismo problema sobre el elipsoide.
+\end{enumerate}

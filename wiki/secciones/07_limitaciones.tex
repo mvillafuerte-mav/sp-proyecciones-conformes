@@ -1,15 +1,16 @@
 % Responsable: Persona 4. ~200 palabras.
 \section{Limitaciones y alcance de validez}
+\label{sec:limitaciones}
 
 \subsection{Modelo esférico frente al elipsoide}
-INEGI trabaja sobre el elipsoide GRS80. Usar la esfera casi no cambia la
-distorsión de Lambert ($\delta = 0.01312$ en el elipsoide contra $0.01319$),
-pero sí la referencia: la distancia haversine difiere de la geodésica sobre el
-elipsoide entre $-0.19\,\%$ y $+0.49\,\%$ (sección~\ref{sec:proj}), más que el
-error de la proyección óptima. Para aprovechar toda la ganancia hay que
-resolver el mismo problema sobre el elipsoide, cambiando $q$ por la latitud
-isométrica del elipsoide y $R\cos\lat$ por el radio del paralelo
-\cite{snyder1987}; el método no cambia.
+Todo el análisis usa la esfera, cuya distancia difiere de la geodésica sobre
+el elipsoide GRS80 hasta en $0.49\,\%$ (sección~\ref{sec:proj}), más que el
+error de la proyección óptima. Medido contra la geodésica real, el error
+típico (mediana) es de $0.29\,\%$ con EPSG:6372 y de $0.15\,\%$ con la óptima
+sobre la envolvente, pero el máximo es parecido: $0.72\,\%$ y $0.68\,\%$. Para
+tener la cota de $0.2\,\%$ en la realidad hay que resolver el mismo problema
+sobre el elipsoide, cambiando $q$ por la latitud isométrica del elipsoide y
+$R\cos\lat$ por el radio del paralelo \cite{snyder1987}; el método no cambia.
 
 \subsection{Ángulos sí, áreas no}
 Una proyección conforme multiplica las áreas por $\sigma^2$: con Lambert el
@@ -38,8 +39,5 @@ conformes son las transformaciones de Möbius \cite{blair2000}.
 
 \subsection{Costo práctico}
 Una proyección a la medida no viene en PROJ ni en los sistemas de información
-geográfica comunes: el cliente depende del script del repositorio y de sus
-modelos ajustados, y sus coordenadas no se pueden mezclar con las de otros
-sistemas que usan EPSG:6372. La ganancia frente a Lambert (de $0.66\,\%$ a
-$0.19\,\%$ en el peor caso) solo vale ese costo cuando el análisis es sensible a
-errores de ese tamaño.
+geográfica comunes: el cliente depende del script del repositorio y sus
+coordenadas no se pueden mezclar con las de sistemas que usan EPSG:6372.

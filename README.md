@@ -98,7 +98,8 @@ modelos ya ajustados de `resultados/modelos/`.
 ```bash
 cd src
 python -m proyecciones.conversion                               # ejemplo con 3 ciudades
-python -m proyecciones.conversion clientes.csv clientes_xy.csv   # CSV con columnas lat, lon
+python -m proyecciones.conversion clientes.csv clientes_xy.csv   # CSV con columnas lat, lon (EPSG:6372)
+python -m proyecciones.conversion clientes.csv salida.csv --proyeccion optima_envolvente
 ```
 
 Desde Python: `from proyecciones.conversion import latlon_a_xy`.

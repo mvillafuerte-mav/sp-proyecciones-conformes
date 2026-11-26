@@ -5,52 +5,41 @@
 \label{sec:metodo}
 
 Se usaron diferencias finitas de cinco puntos en una malla cuadrada del plano
-$w$. En los nodos junto a la frontera, el vecino que cae fuera de $\region$ se
-sustituye por el punto donde la línea de la malla corta el contorno, con su
-distancia real (fórmula de Shortley--Weller \cite{shortley1938}); así el
-error sigue siendo $O(h^2)$ aunque el contorno no coincida con la malla. El
-sistema lineal es ralo y se resuelve por factorización LU con SciPy.
+$w$. Junto a la frontera, el vecino que cae fuera de $\region$ se sustituye por
+el punto donde la línea de la malla corta el contorno, con su distancia real
+(Shortley--Weller \cite{shortley1938}), lo que mantiene el error en $O(h^2)$.
+El sistema es ralo y se resuelve por LU con SciPy.
 
 Para verificar el método se impuso en $\frontera$ una función armónica
 conocida, $\ln|w - w_*|$, con $w_*$ en el Pacífico frente a Baja California.
 El error máximo en los nodos fue $1.5\times10^{-4}$, $3.7\times10^{-5}$,
 $9.7\times10^{-6}$ y $2.5\times10^{-6}$ con pasos $h = 0.004$, $0.002$,
 $0.001$ y $0.0005$: baja a la cuarta parte cada vez que $h$ se divide entre
-dos, como corresponde a $O(h^2)$. Además se verificó el mapa completo: en cada
-cabecera se proyectaron dos puntos a 1~km al norte y al este, y la escala
-medida coincide con $e^{\ln\sigma}$ con error relativo menor que
-$2.2\times10^{-5}$, igual en las dos direcciones, y con un ángulo recto
-entre ellas con error de $0.003^\circ$.
+dos, como corresponde a $O(h^2)$. Para el mapa completo, en cada cabecera se
+proyectaron puntos a 1~km al norte y al este: la escala medida coincide con
+la teórica a $2.2\times10^{-5}$ y el ángulo recto se conserva a $0.003^\circ$.
 
-Antes se probó otra vía: escribir $h$ como parte real de un polinomio complejo
-ajustado en la frontera, que da la conjugada sin esfuerzo \cite{brubeck2021}.
-Para México no funciona: el residuo en la frontera se queda en
-$1.1\times10^{-3}$, $9.6\times10^{-4}$ y $9.2\times10^{-4}$ con grados 40, 80
-y 160, del mismo orden que $\delta^*$. La causa es la geometría: el Golfo de
-California es un canal largo y angosto fuera de $\region$, y cerca de una
-región así los polinomios convergen demasiado lento.
+Antes se probó escribir $h$ como parte real de un polinomio complejo ajustado
+en la frontera \cite{brubeck2021}, pero para México el residuo se estanca en
+$9\times10^{-4}$ (grados 40 a 160), del orden de $\delta^*$: el Golfo de
+California es un canal angosto fuera de $\region$ y ahí los polinomios
+convergen demasiado lento.
 
 \subsection{Verificación con PROJ}
 \label{sec:proj}
 
-Las implementaciones propias de Mercator y Lambert, escritas con la
-coordenada $w$, se compararon con PROJ~9.8 \cite{proj} (vía pyproj~3.8) en su
-versión esférica con $R = 6\,371\,008.8$~m, sobre las 2476 cabeceras. La
-diferencia máxima en posición es menor que $10^{-8}$~m, y el factor de escala
-\eqref{eq:sigma} coincide con el que reporta PROJ hasta $10^{-10}$.
+Nuestras Mercator y Lambert coinciden con las de PROJ~9.8 \cite{proj} en su
+versión esférica ($R = 6\,371\,008.8$~m) a menos de $10^{-8}$~m en las 2476
+cabeceras, y su factor de escala, a $10^{-10}$.
 
 Los parámetros de la Lambert de INEGI se tomaron del registro EPSG
 \cite{epsg}: paralelos estándar $17.5^\circ$ y $29.5^\circ$, origen en
 $12^\circ$\,N y $102^\circ$\,O, y falso este de 2\,500\,000~m. En ese registro
-la proyección aparece como EPSG:6372 (\emph{Mexico ITRF2008 / LCC}) y, con los
-mismos parámetros, EPSG:6362 (ITRF92); el código EPSG:6361 que suele citarse no aparece
-en el registro como sistema de coordenadas, por lo que usamos el 6372.
+la proyección es EPSG:6372 (\emph{Mexico ITRF2008 / LCC}); el código
+EPSG:6361 que suele citarse no aparece como sistema de coordenadas.
 
-Por último se comparó con EPSG:6372 sobre el elipsoide GRS80, que es el que
-usa INEGI. Las coordenadas cambian hasta 9.6~km (4.0~km en la mediana),
-porque esfera y elipsoide asignan latitudes distintas, pero la distorsión casi
-no cambia: $\delta = 0.01312$ en el elipsoide contra $0.01319$ en la esfera.
-Lo que sí cambia es la referencia: en una muestra aleatoria de 19\,990 pares de
-cabeceras, la distancia
-haversine difiere de la geodésica sobre GRS80 entre $-0.19\,\%$ y
-$+0.49\,\%$. Volvemos a este número en la sección de limitaciones.
+Frente a EPSG:6372 sobre el elipsoide GRS80 que usa INEGI, las coordenadas
+cambian hasta 9.6~km, pero la distorsión casi no ($\delta = 0.01312$ contra
+$0.01319$). Lo que sí cambia es la referencia: en 19\,990 pares de cabeceras,
+la distancia haversine difiere de la geodésica sobre GRS80 entre $-0.19\,\%$ y
+$+0.49\,\%$.

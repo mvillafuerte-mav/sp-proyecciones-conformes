@@ -213,6 +213,34 @@ def factores_area(df):
     return pd.DataFrame(filas)
 
 
+# ------------------------------------------------------------ elipsoide
+
+def contra_elipsoide(df, xy, pares, error_posicion_m=50.0):
+    """Error contra la geodésica real sobre GRS80 (no contra la esfera), para
+    nuestras proyecciones y para la Lambert oficial EPSG:6372 (elipsoidal).
+
+    También da el umbral de distancia a partir del cual el error de la
+    proyección supera un error de posición dado: d = error_posicion / error.
+    """
+    from pyproj import Geod, Transformer
+
+    lat, lon = df["lat"].to_numpy(), df["lon"].to_numpy()
+    i, j = pares["i"].to_numpy(), pares["j"].to_numpy()
+    _, _, dg = Geod(ellps="GRS80").inv(lon[i], lat[i], lon[j], lat[j])
+    todas = dict(xy)
+    X, Y = Transformer.from_crs(4326, 6372, always_xy=True).transform(lon, lat)
+    todas["EPSG:6372 (elipsoide)"] = np.column_stack([X, Y])
+    filas = []
+    for nombre, P in todas.items():
+        r = 100 * np.abs(np.hypot(*(P[i] - P[j]).T) / dg - 1)
+        med, mx = np.median(r), r.max()
+        filas.append({"proyeccion": nombre, "mediana_%": med,
+                      "p95_%": np.percentile(r, 95), "max_%": mx,
+                      "umbral_tipico_km": error_posicion_m / (med / 100) / 1000,
+                      "umbral_peor_km": error_posicion_m / (mx / 100) / 1000})
+    return pd.DataFrame(filas)
+
+
 if __name__ == "__main__":
     pd.set_option("display.width", 200)
     tablas = RAIZ / "resultados" / "tablas"
@@ -248,3 +276,8 @@ if __name__ == "__main__":
     ar.to_csv(tablas / "efecto_areas.csv", index=False)
     print("\n4) factor de área σ²")
     print(ar.round(5).to_string(index=False))
+
+    el = contra_elipsoide(df, xy, pares)
+    el.to_csv(tablas / "efecto_elipsoide.csv", index=False)
+    print("\n5) contra la geodésica sobre GRS80, y umbral para 50 m de error de posición")
+    print(el.round(3).to_string(index=False))

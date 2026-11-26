@@ -1,5 +1,6 @@
 % Responsable: Persona 3. ~100 palabras + tabla.
 \section{Herramienta para el cliente}
+\label{sec:herramienta}
 
 La tabla~\ref{tab:comparativa} resume las cuatro opciones. Las columnas de
 distancias, k-means y vecinos se calcularon con las cabeceras municipales
@@ -21,14 +22,14 @@ Para convertir coordenadas, el repositorio incluye la función
 \texttt{latlon\_a\_xy(lat, lon, proyeccion="recomendada")} en
 \texttt{src/proyecciones/conversion.py}. Recibe grados (números, arreglos o
 las columnas de un CSV) y devuelve $x, y$ en metros. La opción recomendada es
-la óptima sobre la envolvente convexa, cuyo modelo ya ajustado viene en el
-repositorio, así que no hace falta resolver nada; también acepta
-\texttt{"optima"}, \texttt{"lambert"} y \texttt{"mercator"}; avisa si un
-punto queda fuera de la región, y las filas sin coordenadas quedan vacías. Desde la terminal:
+EPSG:6372 (sección~\ref{sec:recomendacion}); también ofrece la óptima sobre la
+envolvente (\texttt{"optima\_envolvente"}), cuyo modelo ajustado viene en el
+repositorio, la óptima sobre México, Lambert esférica y Mercator. Avisa si un
+punto queda fuera de la región de la óptima, y las filas sin coordenadas
+quedan vacías. Desde la terminal:
 \begin{lstlisting}[basicstyle=\footnotesize\ttfamily]
 python -m proyecciones.conversion clientes.csv clientes_xy.csv
 \end{lstlisting}
-Por ejemplo, con la proyección recomendada la distancia en el plano entre la
-Ciudad de México y Monterrey es de 704.78~km, contra 705.93~km sobre la
-esfera ($-0.16\,\%$), y entre Monterrey y Mérida, de 1212.99~km contra
-1213.52~km ($-0.04\,\%$).
+Con la óptima sobre la envolvente, la distancia en el plano entre la Ciudad
+de México y Monterrey es de 704.78~km, contra 705.93~km sobre la esfera
+($-0.16\,\%$).

@@ -1,6 +1,15 @@
 % Responsable: Persona 4. ~150 palabras. Se escribe al final con los números de la tabla.
 \begin{abstract}
-\textbf{Pendiente.} Un párrafo con la respuesta para el cliente: qué proyección
-usar, $\delta$ de Mercator, Lambert y la óptima, error típico en distancias y
-cuánto se gana con la óptima.
+Para analizar distancias en México, Mercator no sirve: infla las distancias
+entre un $5\,\%$ en el sur y un $12\,\%$ en el norte (hasta $18\,\%$), y esa
+diferencia entre regiones no se corrige con ninguna escala constante. La
+Cónica Conforme de Lambert de INEGI distorsiona 10 veces menos
+($\delta = 0.0132$, error máximo de escala de $0.66\,\%$). La proyección
+conforme óptima, que se obtiene resolviendo un problema de Dirichlet sobre el
+contorno del país, la mejora otras 7 veces ($\delta = 0.00184$, $0.09\,\%$).
+Medidas contra las distancias reales sobre el elipsoide, la Lambert oficial
+(EPSG:6372) tiene un error típico de $0.29\,\%$ y la óptima (resuelta sobre la
+envolvente convexa del país) de $0.15\,\%$, con máximos cercanos a $0.7\,\%$ en
+ambas porque la óptima se calculó sobre la esfera. Recomendamos cambiar de inmediato a EPSG:6372 y usar la proyección
+óptima cuando importe el error típico en distancias largas.
 \end{abstract}

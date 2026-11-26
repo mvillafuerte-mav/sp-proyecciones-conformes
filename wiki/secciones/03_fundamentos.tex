@@ -4,58 +4,47 @@
 
 \subsection{Funciones analíticas y ecuaciones de Cauchy--Riemann}
 
-Una función $f(z) = u(x,y) + i\,v(x,y)$ es analítica en una región si tiene
-derivada compleja en cada punto. Esto equivale a que $u$ y $v$ sean
-diferenciables y cumplan las ecuaciones de Cauchy--Riemann
+Una función $f(z) = u + i\,v$ es analítica si tiene derivada compleja en
+cada punto, lo que equivale a que $u$ y $v$ sean diferenciables y cumplan
 \begin{equation}
   u_x = v_y, \qquad u_y = -v_x ,
   \label{eq:cr}
 \end{equation}
 y en ese caso $f'(z) = u_x + i\,v_x$ \cite{marsden1999,ahlfors1979}.
 
-La consecuencia geométrica es lo que nos interesa. Por \eqref{eq:cr}, la
-matriz jacobiana de $(x,y)\mapsto(u,v)$ es
+Por \eqref{eq:cr}, la matriz jacobiana de $(x,y)\mapsto(u,v)$ es
 \begin{equation}
   J = \begin{pmatrix} u_x & -v_x \\ v_x & u_x \end{pmatrix}
     = |f'(z)| \begin{pmatrix} \cos\theta & -\sin\theta \\ \sin\theta & \cos\theta \end{pmatrix},
   \qquad \theta = \arg f'(z),
   \label{eq:jacobiana}
 \end{equation}
-es decir, una rotación seguida de un escalamiento. Dicho de otra forma,
-$df = f'(z)\,dz$: todo vector tangente en $z$ gira el mismo ángulo $\theta$ y
-se estira el mismo factor $|f'(z)|$, sin importar su dirección. Si
-$f'(z) \neq 0$, dos curvas que se cruzan en $z$ con cierto ángulo llegan a
-cruzarse con el mismo ángulo: $f$ es \emph{conforme} en $z$. La condición
-$f' \neq 0$ no se puede quitar: $f(z) = z^2$ manda el rayo $\arg z = \alpha$
-al rayo de ángulo $2\alpha$, así que en el origen, donde $f'(0)=0$, duplica los
-ángulos.
+una rotación seguida de un escalamiento: todo vector tangente gira el mismo
+ángulo $\theta$ y se estira el mismo factor $|f'(z)|$, sin importar su
+dirección. Si $f'(z) \neq 0$, los ángulos entre curvas se conservan y $f$ es
+\emph{conforme}. La condición no se puede quitar: $f(z) = z^2$, con
+$f'(0) = 0$, duplica los ángulos en el origen.
 
 \subsection{Funciones armónicas y problema de Dirichlet}
 
-Una función real $h$ es armónica si $\nabla^2 h = h_{xx} + h_{yy} = 0$.
-Derivando \eqref{eq:cr} se obtiene $u_{xx} = v_{yx} = -u_{yy}$, así que la
-parte real y la parte imaginaria de una función analítica son armónicas. Al
-revés, en una región simplemente conexa toda $h$ armónica es la parte real de
-una función analítica $h + i\tilde h$; la función $\tilde h$ es la
-\emph{conjugada armónica} de $h$ y es única salvo una constante
-\cite{ahlfors1979}.
-
-El caso que usaremos es el siguiente. Si $f$ es analítica y $f' \neq 0$ en una
-región simplemente conexa, existe una rama analítica de $\log f'$, y
+Una función $h$ es armónica si $\nabla^2 h = 0$. Derivando \eqref{eq:cr},
+$u_{xx} = v_{yx} = -u_{yy}$: las partes real e imaginaria de una función
+analítica son armónicas. Al revés, en una región simplemente conexa toda $h$
+armónica es la parte real de una función analítica $h + i\tilde h$, y
+$\tilde h$ es su \emph{conjugada armónica}, única salvo una constante
+\cite{ahlfors1979}. En particular, si $f' \neq 0$ existe una rama de
+$\log f'$ y
 \begin{equation}
   \log f'(w) = \ln|f'(w)| + i\arg f'(w)
   \quad\Longrightarrow\quad
   \nabla^2 \ln|f'| = 0 .
   \label{eq:lnfprima}
 \end{equation}
-Es decir, el logaritmo de $|f'|$, el factor con el que $f$ estira las
-longitudes del plano, es armónico, y su conjugada es el ángulo de rotación
-$\arg f'$. Ojo: esto todavía no es el factor de escala del mapa sobre la
-esfera, que incluye además la curvatura (sección~\ref{sec:paso4}).
+Ojo: $|f'|$ todavía no es el factor de escala del mapa sobre la esfera, que
+incluye además la curvatura (sección~\ref{sec:paso4}).
 
-Dados una región acotada $\Omega$ y valores $g$ continuos en su frontera, el
-\emph{problema de Dirichlet} pide $h$ armónica en $\Omega$ con $h = g$ en
-$\partial\Omega$. Los dos resultados que necesitamos son:
+El \emph{problema de Dirichlet} pide $h$ armónica en una región acotada
+$\Omega$ con valores dados $h = g$ en $\partial\Omega$. Usaremos dos resultados:
 \begin{itemize}
   \item \textbf{Principio del máximo.} Una función armónica no constante en
     $\Omega$ alcanza su máximo y su mínimo solo en $\partial\Omega$. Si $s$ es
@@ -70,11 +59,10 @@ $\partial\Omega$. Los dos resultados que necesitamos son:
 
 \subsection{Esfera de Riemann y proyección estereográfica}
 
-La esfera de Riemann identifica el plano complejo extendido
-$\mathbb{C}\cup\{\infty\}$ con una esfera mediante la proyección
-estereográfica. Para una esfera de radio $R$, un punto de latitud $\lat$ y
-longitud $\lon$ se proyecta desde el polo sur sobre el plano del ecuador. Por
-triángulos semejantes, su distancia al centro es
+La esfera de Riemann identifica $\mathbb{C}\cup\{\infty\}$ con una esfera
+mediante la proyección estereográfica: un punto de latitud $\lat$ y longitud
+$\lon$ se proyecta desde el polo sur sobre el plano del ecuador, y por
+triángulos semejantes su distancia al centro es
 \begin{equation}
   r(\lat) = \frac{R\cos\lat}{1+\sin\lat} = R\tan\!\left(\frac{\pi}{4}-\frac{\lat}{2}\right),
   \qquad \zeta = r(\lat)\,e^{i\lon} .
@@ -83,16 +71,14 @@ triángulos semejantes, su distancia al centro es
 Un desplazamiento hacia el norte mide $R\,d\lat$ en la esfera y
 $|dr| = R\,d\lat/(1+\sin\lat)$ en el plano; uno hacia el este mide
 $R\cos\lat\,d\lon$ en la esfera y $r\,d\lon = R\cos\lat\,d\lon/(1+\sin\lat)$
-en el plano. Las dos direcciones se reducen por el mismo factor, así que
-$|d\zeta| = ds/(1+\sin\lat)$ en \emph{cualquier} dirección. La proyección estereográfica escala igual en todas
-direcciones, así que es conforme.
+en el plano. Las dos se reducen por el mismo factor, así que la proyección
+escala igual en todas direcciones: es conforme.
 
 \subsection{Coordenada compleja sobre la esfera}
 
 En latitud y longitud, la métrica de la esfera es
-$ds^2 = R^2(d\lat^2 + \cos^2\lat\, d\lon^2)$. Los dos términos tienen pesos
-distintos, y por eso un grado de longitud mide menos que uno de latitud. Para
-igualarlos se define la \emph{latitud isométrica}
+$ds^2 = R^2(d\lat^2 + \cos^2\lat\, d\lon^2)$. Para igualar los pesos de los
+dos términos se define la \emph{latitud isométrica}
 \begin{equation}
   q(\lat) = \ln\tan\!\left(\frac{\pi}{4}+\frac{\lat}{2}\right),
   \qquad \frac{dq}{d\lat} = \frac{1}{2\sin(\frac{\pi}{4}+\frac{\lat}{2})\cos(\frac{\pi}{4}+\frac{\lat}{2})}
@@ -106,30 +92,22 @@ compleja $w = \lon + i\,q$ queda
   ds^2 = R^2\cos^2\lat\,(d\lon^2 + dq^2) = R^2\cos^2\lat\,|dw|^2 .
   \label{eq:metrica}
 \end{equation}
-En la coordenada $w$, la esfera se ve como el plano con un factor que depende
-solo del punto y no de la dirección (se dice que la métrica es
-\emph{conformemente plana}).
-
-Toda proyección cartográfica es una función $z = x + iy = f(w)$. Si $f$ es
-analítica con $f'\neq 0$, entonces $|dz| = |f'(w)|\,|dw|$, y por
-\eqref{eq:metrica} el factor de escala, es decir, la longitud en el mapa
-dividida entre la longitud real, es
+La métrica es \emph{conformemente plana}: un factor que depende del punto
+pero no de la dirección. Toda proyección es una función $z = x + iy = f(w)$, y
+si $f$ es analítica con $f'\neq 0$, entonces $|dz| = |f'(w)|\,|dw|$ y el
+factor de escala (longitud en el mapa entre longitud real) es
 \begin{equation}
   \sigma(w) = \frac{|dz|}{ds} = \frac{|f'(w)|}{R\cos\lat},
   \label{eq:sigma}
 \end{equation}
-igual en todas direcciones: la proyección es conforme. El recíproco también
-vale: una proyección conforme que conserva la orientación, escrita en la
-coordenada $w$, cumple las ecuaciones de Cauchy--Riemann
-\cite{ahlfors1979,milnor1969}. Por lo tanto, \emph{elegir una proyección
-conforme es lo mismo que elegir una función analítica $f$}, y todo lo que
-falta es decidir cuál.
+igual en todas direcciones. El recíproco también vale
+\cite{ahlfors1979,milnor1969}, así que \emph{elegir una proyección conforme es
+lo mismo que elegir una función analítica $f$}.
 
 Un ejemplo: como $\tan(\pi/4-\lat/2) = e^{-q}$, la proyección estereográfica
 \eqref{eq:estereo} se escribe $\zeta = R\,e^{-q}e^{i\lon} = R\,e^{iw}$, que es
 analítica. La figura~\ref{fig:reticula} muestra dos proyecciones
-conformes de México: la retícula cambia de forma, pero sus ángulos rectos se
-conservan.
+conformes de México.
 
 \begin{figure}[ht]
   \centering

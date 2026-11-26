@@ -3,7 +3,8 @@
 Uso desde Python:
 
     from proyecciones.conversion import latlon_a_xy
-    x, y = latlon_a_xy([19.4326, 25.6866, 20.9674], [-99.1332, -100.3161, -89.5926])
+    x, y = latlon_a_xy([19.4326, 25.6866, 20.9674], [-99.1332, -100.3161, -89.5926],
+                       proyeccion="optima_envolvente")
 
 Uso desde la terminal, con un CSV que tenga columnas lat y lon:
 
@@ -11,7 +12,9 @@ Uso desde la terminal, con un CSV que tenga columnas lat y lon:
     python -m proyecciones.conversion entrada.csv salida.csv --proyeccion lambert
 
 Proyecciones disponibles:
-  "recomendada"        = "optima_envolvente"
+  "recomendada"        = "epsg6372"
+  "epsg6372"           Lambert oficial de INEGI sobre el elipsoide GRS80 (vía PROJ);
+                       compatible con cualquier SIG
   "optima_envolvente"  óptima de Chebyshev sobre la envolvente convexa de México
                        (error de escala ≤ 0.19 %, también para pares que cruzan
                        los golfos)
@@ -49,8 +52,8 @@ def _modelo(nombre):
 def latlon_a_xy(lat, lon, proyeccion="recomendada"):
     """lat, lon en grados (números o arreglos). Devuelve (x, y) en metros.
 
-    Para las óptimas el origen está en (23.5° N, 102° O); para Lambert, en el
-    origen de INEGI (falso este 2 500 000 m).
+    Para las óptimas el origen está en (23.5° N, 102° O); para Lambert y
+    EPSG:6372, en el origen de INEGI (falso este 2 500 000 m).
     """
     lat = np.asarray(lat, dtype=float)
     lon = np.asarray(lon, dtype=float)
@@ -58,8 +61,8 @@ def latlon_a_xy(lat, lon, proyeccion="recomendada"):
     la = np.broadcast_to(lat, forma).ravel()
     lo = np.broadcast_to(lon, forma).ravel()
     if proyeccion == "recomendada":
-        proyeccion = "optima_envolvente"
-    if proyeccion not in ("mercator", "lambert") and proyeccion not in ARCHIVOS:
+        proyeccion = "epsg6372"
+    if proyeccion not in ("mercator", "lambert", "epsg6372") and proyeccion not in ARCHIVOS:
         raise ValueError(f"proyección desconocida: {proyeccion!r}")
 
     # filas sin coordenadas (NaN) se devuelven como NaN
@@ -71,6 +74,10 @@ def latlon_a_xy(lat, lon, proyeccion="recomendada"):
             x[ok], y[ok] = mercator(la[ok], lo[ok])
         elif proyeccion == "lambert":
             x[ok], y[ok] = lambert(la[ok], lo[ok])
+        elif proyeccion == "epsg6372":
+            from pyproj import Transformer
+            t = Transformer.from_crs(4326, 6372, always_xy=True)
+            x[ok], y[ok] = t.transform(lo[ok], la[ok])
         else:
             m = _modelo(proyeccion)
             lejos = m.distancia_a_malla(la[ok], lo[ok]) > DISTANCIA_AVISO
@@ -101,13 +108,14 @@ EJEMPLO = {
 
 
 def ejemplo():
-    """Las tres ciudades del ejemplo y su distancia en el plano contra haversine."""
+    """Las tres ciudades del ejemplo con la óptima sobre la envolvente, y su
+    distancia en el plano contra haversine."""
     from .datos import haversine
 
     nombres = list(EJEMPLO)
     lat = np.array([EJEMPLO[n][0] for n in nombres])
     lon = np.array([EJEMPLO[n][1] for n in nombres])
-    x, y = latlon_a_xy(lat, lon)
+    x, y = latlon_a_xy(lat, lon, "optima_envolvente")
     filas = []
     for n, xi, yi in zip(nombres, x, y):
         filas.append(f"{n:18s} x = {xi:12.1f} m   y = {yi:12.1f} m")
@@ -124,7 +132,8 @@ if __name__ == "__main__":
     ap.add_argument("entrada", nargs="?", help="CSV con columnas lat y lon")
     ap.add_argument("salida", nargs="?", help="CSV de salida")
     ap.add_argument("--proyeccion", default="recomendada",
-                    choices=["recomendada", "optima_envolvente", "optima", "lambert", "mercator"])
+                    choices=["recomendada", "epsg6372", "optima_envolvente", "optima",
+                             "lambert", "mercator"])
     ap.add_argument("--lat", default="lat")
     ap.add_argument("--lon", default="lon")
     args = ap.parse_args()
