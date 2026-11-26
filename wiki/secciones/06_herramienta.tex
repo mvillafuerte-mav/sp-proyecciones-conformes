@@ -19,15 +19,15 @@ distancias, k-means y vecinos se calcularon con las cabeceras municipales
 \end{table}
 
 Para convertir coordenadas, el repositorio incluye la función
-\texttt{latlon\_a\_xy(lat, lon, proyeccion="recomendada")} en
-\texttt{src/proyecciones/conversion.py}. Recibe grados (números, arreglos o
-las columnas de un CSV) y devuelve $x, y$ en metros. La opción recomendada es
-EPSG:6372 (sección~\ref{sec:recomendacion}); también ofrece la óptima sobre la
-envolvente (\texttt{"optima\_envolvente"}), cuyo modelo ajustado viene en el
+\texttt{latlon\_a\_xy} en \texttt{src/proyecciones/conversion.py}. Recibe
+grados (números, arreglos o las columnas de un CSV) y devuelve $x, y$ en
+metros. La opción recomendada es EPSG:6372 (sección~\ref{sec:recomendacion});
+también ofrece la óptima sobre la envolvente, cuyo modelo ajustado viene en el
 repositorio, la óptima sobre México, Lambert esférica y Mercator. Avisa si un
 punto queda fuera de la región de la óptima, y las filas sin coordenadas
-quedan vacías. Desde la terminal:
-\begin{lstlisting}[basicstyle=\footnotesize\ttfamily]
+quedan vacías. Desde Python y desde la terminal:
+\begin{lstlisting}[basicstyle=\footnotesize\ttfamily,columns=fullflexible]
+x, y = latlon_a_xy(lat, lon, proyeccion="recomendada")
 python -m proyecciones.conversion clientes.csv clientes_xy.csv
 \end{lstlisting}
 Con la óptima sobre la envolvente, la distancia en el plano entre la Ciudad
