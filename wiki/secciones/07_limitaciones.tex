@@ -13,7 +13,8 @@ isométrica del elipsoide y $R\cos\lat$ por el radio del paralelo
 
 \subsection{Ángulos sí, áreas no}
 Una proyección conforme multiplica las áreas por $\sigma^2$: con Lambert el
-efecto llega a $1.6\,\%$ y con la óptima a $0.2\,\%$. Para conteos por área o
+efecto llega a $1.5\,\%$, con la óptima sobre México a $0.2\,\%$ y con la de la
+envolvente a $0.4\,\%$. Para conteos por área o
 mapas de densidad que deban ser exactos conviene una proyección equivalente,
 como la cónica equivalente de Albers \cite{snyder1987}, o calcular
 directamente sobre la esfera (por ejemplo, con un BallTree con métrica
@@ -23,12 +24,14 @@ haversine).
 La garantía de Chebyshev se refiere a $\region$. Para distancias cuyo recorrido
 sale de la región, como las que cruzan el Golfo de California, la óptima
 sobre México puede ser peor que Lambert ($1.8\,\%$ contra $0.6\,\%$). La región
-debe elegirse según los análisis: la envolvente convexa cubre cualquier par a
-cambio de duplicar $\delta$.
+debe elegirse según los análisis: la envolvente convexa incluye los dos golfos
+y, a cambio de duplicar $\delta$, mantuvo el error por debajo de $0.2\,\%$ en
+todos los pares de la muestra.
 
 \subsection{Límites teóricos}
-El teorema de Riemann garantiza que existe un mapeo conforme entre regiones
-simplemente conexas, pero no da una fórmula \cite{ahlfors1979}; por eso la
+El teorema de Riemann garantiza que existe un mapeo conforme entre dos
+regiones simplemente conexas distintas del plano completo, pero no da una
+fórmula \cite{ahlfors1979}; por eso la
 proyección óptima se obtuvo numéricamente. Además, el método es propio del
 plano: por el teorema de Liouville, en dimensión 3 o mayor los únicos mapeos
 conformes son las transformaciones de Möbius \cite{blair2000}.
