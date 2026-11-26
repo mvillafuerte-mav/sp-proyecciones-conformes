@@ -4,7 +4,7 @@ from proyecciones.constantes import latitud_isometrica
 
 
 def test_latitud_isometrica_ecuador():
-    assert latitud_isometrica(0.0) == 0.0
+    assert np.isclose(latitud_isometrica(0.0), 0.0)
 
 
 def test_derivada_q_es_sec():
@@ -16,3 +16,17 @@ def test_derivada_q_es_sec():
 
 # TODO Persona 4: mercator y lambert vs pyproj
 # TODO Persona 2: Dirichlet con h = Re(e^w) en la frontera
+
+
+def test_haversine_un_grado_de_latitud():
+    from proyecciones.datos import haversine
+    from proyecciones.constantes import R_M
+    d = haversine(20.0, -100.0, 21.0, -100.0)
+    assert np.isclose(d, R_M * np.pi / 180)
+
+
+def test_haversine_simetrica():
+    from proyecciones.datos import haversine
+    a = haversine(19.43, -99.13, 25.69, -100.32)
+    b = haversine(25.69, -100.32, 19.43, -99.13)
+    assert np.isclose(a, b)

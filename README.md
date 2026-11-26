@@ -53,6 +53,25 @@ La consigna completa está en [`docs/consigna.md`](docs/consigna.md).
 4. Commits chicos y con mensaje claro, ej. `paso 2: derivación de n`.
 5. Todo número que aparezca en la wiki tiene que salir del código, no se copia a mano.
 
+## Datos
+
+Los datos no se suben al repo. Para descargarlos y procesarlos (tarda unos
+minutos, hace una consulta a la API del INEGI por municipio):
+
+```bash
+cd src
+python -m proyecciones.datos
+```
+
+Esto deja en `data/processed/`:
+- `contorno_mexico.csv`: contorno de México continental (sin islas), a partir
+  del Marco Geoestadístico del INEGI, simplificado a ~1 km.
+- `cabeceras.csv`: cabecera de cada municipio con lat, lon, región
+  (Norte/Centro/Sur por entidad) y si cae dentro del contorno continental.
+
+Si sale un error de certificado SSL en Mac, correr una vez
+`/Applications/Python\ 3.*/Install\ Certificates.command`.
+
 ## Compilar la wiki
 
 Con Overleaf: subir la carpeta `wiki/` (o conectar el repo) y compilar `main.tex`.

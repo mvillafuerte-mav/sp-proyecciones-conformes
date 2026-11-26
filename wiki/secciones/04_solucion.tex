@@ -147,6 +147,22 @@ numérico y se describe a continuación.
 % Figura 2 (Persona 3): mapa de sigma para las tres proyecciones.
 
 \subsection{Paso 5. Efecto en los datos del cliente}
+
+\paragraph{Datos.} Como región $\region$ se usa México continental, sin
+islas, obtenido de la unión de las 32 entidades del Marco Geoestadístico del
+INEGI \cite{inegi_catalogo} y simplificado con una tolerancia de
+$0.01^\circ$ (cerca de 1~km). El contorno resultante tiene 2061 vértices y va
+de $14.53^\circ$\,N a $32.72^\circ$\,N. Como datos de prueba se usan las
+cabeceras de los 2478 municipios, con sus coordenadas tomadas del Catálogo
+Único de Claves Geoestadísticas del INEGI (consultado el 26 de noviembre de
+2026); en las alcaldías de la Ciudad de México, que no tienen cabecera, se
+toma su localidad más poblada. Se excluyen las dos cabeceras que están en
+islas (Cozumel e Isla Mujeres), lo que deja 2476 puntos. Cada punto se asigna
+a una región según su entidad: Norte (BC, BCS, Son., Chih., Coah., NL,
+Tamps., Dgo., Sin., Zac.), Centro (Ags., Col., CDMX, Gto., Hgo., Jal., Méx.,
+Mich., Mor., Nay., Pue., Qro., SLP, Tlax.) y Sur (Camp., Chis., Gro., Oax.,
+Q.\,Roo, Tab., Ver., Yuc.), con 400, 940 y 1136 puntos.
+
 % Datos, error relativo vs haversine por región, k-means, kNN, áreas (sigma^2).
 
 % Figura 3 (Persona 3): distribución del error en distancias.
