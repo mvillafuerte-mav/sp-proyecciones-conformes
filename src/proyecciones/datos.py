@@ -67,11 +67,16 @@ def _entero(x, defecto=0):
 
 
 def _fila_cabecera(ent, m):
-    """Busca la cabecera del municipio m. Si no tiene (alcaldías de la CDMX),
-    usa la localidad más poblada."""
-    locs = [l for l in _get_json(f"{API}/localidades/{ent}/{m['cve_mun']}")["datos"]
-            if l.get("latitud")]
-    cab = next((l for l in locs if l["cve_loc"] == m.get("cve_cab")), None)
+    """Busca la cabecera del municipio m.
+
+    Las alcaldías de la CDMX no tienen cabecera (cve_cab = '----'); en ese
+    caso se usa la localidad 0001, que es la sede de la alcaldía, y si no
+    existe, la más poblada.
+    """
+    url = f"{API}/localidades/{ent}/{m['cve_mun']}"
+    locs = [l for l in _get_json(url).get("datos", []) if l.get("latitud")]
+    por_clave = {l["cve_loc"]: l for l in locs}
+    cab = por_clave.get(m.get("cve_cab")) or por_clave.get("0001")
     if cab is None and locs:
         cab = max(locs, key=lambda l: _entero(l.get("pob_total")))
     if cab is None:
@@ -97,7 +102,7 @@ def descargar_cabeceras(pausa=0.05):
     filas = []
     for ent in range(1, 33):
         ent = f"{ent:02d}"
-        for m in _get_json(f"{API}/mgem/{ent}")["datos"]:
+        for m in _get_json(f"{API}/mgem/{ent}").get("datos", []):
             fila = _fila_cabecera(ent, m)
             if fila:
                 filas.append(fila)
@@ -181,7 +186,7 @@ def haversine(lat1, lon1, lat2, lon2, R=R_M):
     dp = p2 - p1
     dl = np.radians(np.asarray(lon2) - np.asarray(lon1))
     a = np.sin(dp / 2) ** 2 + np.cos(p1) * np.cos(p2) * np.sin(dl / 2) ** 2
-    return 2 * R * np.arcsin(np.sqrt(a))
+    return 2 * R * np.arcsin(np.sqrt(np.clip(a, 0.0, 1.0)))
 
 
 if __name__ == "__main__":
