@@ -114,7 +114,7 @@ class Malla:
         for eje in (0, 1):                         # 0: dirección λ, 1: dirección q
             kp, km = 2 * eje, 2 * eje + 1          # +, -
             dp, dm = self.dist[:, kp], self.dist[:, km]
-            for k, d, otra in ((kp, dp, dm), (km, dm, dp)):
+            for k, d in ((kp, dp), (km, dm)):
                 a = 2.0 / (d * (dp + dm))
                 diag -= a
                 nb = self.vecino[:, k]
@@ -253,7 +253,12 @@ class ProyeccionOptima:
 
     def proyectar(self, lat, lon):
         """(lat, lon) en grados -> (x, y) en metros. Origen en (23.5° N, 102° O),
-        norte hacia arriba en ese punto."""
+        norte hacia arriba en ese punto.
+
+        Para puntos fuera de Ω (islas, o costa recortada por la
+        simplificación) el valor se extrapola desde el nodo más cercano; sigue
+        siendo conforme ahí cerca, pero la cota de escala δ solo vale en Ω.
+        """
         w = np.atleast_1d(w_de(lat, lon))
         i = self._nodo_cercano(w)
         dw = w - self.w[i]
