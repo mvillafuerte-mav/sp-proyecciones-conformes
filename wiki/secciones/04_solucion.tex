@@ -97,8 +97,9 @@ y sobre el contorno mismo, y los resultados coinciden:
   \item \textbf{Mercator.} $\ln\sigma = -\ln\cos\lat$ crece con la latitud,
     así que $\sigma$ va de $1.0331$ en el extremo sur a $1.1886$ en el norte y
     $\delta_{\mathrm{M}} = 0.140$. Aun reescalado, el error máximo es de
-    $7.3\,\%$; tal como se usa en los mapas web (escala exacta en el ecuador),
-    llega a $18.9\,\%$.
+    $7.3\,\%$; con escala exacta en el ecuador, como en los mapas web, llega
+    a $18.9\,\%$ (los mapas web usan además $R = 6\,378\,137$~m, el radio
+    ecuatorial, lo que agrega otro $0.11\,\%$).
   \item \textbf{Lambert de INEGI.} Por \eqref{eq:lambert_min}, $\sigma$ baja a
     $0.9945$ en $23.5^\circ$\,N y sube a $1.0077$ en el extremo norte (en el
     extremo sur vale $1.0067$), así que $\delta_{\mathrm{L}} = 0.0132$. El error
@@ -218,8 +219,8 @@ Q.\,Roo, Tab., Ver., Yuc.), con 400, 940 y 1136 puntos.
 
 \paragraph{Distancias.} Se tomaron 20\,000 pares al azar dentro de cada región
 y otros 20\,000 en todo el país, y para cada uno se comparó la distancia
-euclidiana en la proyección con la haversine. Con Mercator, tal como se usa en
-los mapas web, la mediana del error es de $5.0\,\%$ en el Sur, $6.3\,\%$ en el
+euclidiana en la proyección con la haversine. Con Mercator, con escala exacta
+en el ecuador, la mediana del error es de $5.0\,\%$ en el Sur, $6.3\,\%$ en el
 Centro y $11.6\,\%$ en el Norte, con máximos de $18.6\,\%$. Corregir con una
 escala constante no basta (y no cambiaría ningún agrupamiento): en el Norte la
 mediana sigue en $5.2\,\%$, que es justo la variación de $\sec\lat$. Con
@@ -233,8 +234,8 @@ La excepción son los pares que cruzan el mar. Entre Baja California Sur y
 Sinaloa, por ejemplo, el error de la óptima llega a $1.8\,\%$: la cota de
 Chebyshev solo vale dentro de $\region$, y el Golfo de California queda fuera.
 Si el mismo problema se resuelve sobre la envolvente convexa de México, que
-incluye los dos golfos, $\delta$ sube a $0.0039$, pero el error máximo es de
-$0.19\,\%$ para \emph{todos} los pares.
+incluye los dos golfos, $\delta$ sube a $0.0039$, pero el error máximo en
+\emph{todos} los pares de la muestra, crucen o no el mar, es de $0.19\,\%$.
 
 \paragraph{Agrupamiento y vecinos.} Se corrió k-means con $k = 10$, $20$ y $50$
 y diez semillas, arrancando cada proyección de los mismos centros que un
@@ -251,7 +252,8 @@ la óptima; esta última diferencia viene de dos cabeceras de Baja California
 Sur cuyos vecinos están al otro lado del golfo, y desaparece con la envolvente.
 
 \paragraph{Áreas.} Una proyección conforme multiplica las áreas por
-$\sigma^2$. En Mercator ese factor va de $1.07$ en el Sur a $1.41$ en el Norte,
+$\sigma^2$. Evaluado en las cabeceras, en Mercator ese factor va de $1.07$ en el
+Sur a $1.41$ en el Norte,
 así que un mapa de densidad (puntos por unidad de área del plano) subestima la
 densidad del norte hasta en un $24\,\%$ frente a la del sur. Con Lambert el
 factor está entre $0.989$ y $1.015$, y con la óptima entre $0.998$ y $1.002$.

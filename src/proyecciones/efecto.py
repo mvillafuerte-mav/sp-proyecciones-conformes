@@ -2,8 +2,8 @@
 
     python -m proyecciones.efecto
 
-Compara Mercator, Lambert de INEGI y la óptima contra la referencia sobre la
-esfera (haversine) usando las cabeceras municipales:
+Compara Mercator, Lambert de INEGI, la óptima y la óptima sobre la envolvente
+convexa contra la referencia sobre la esfera (haversine), con las cabeceras:
   1. error relativo en distancias, por región;
   2. k-means: asignaciones que cambian respecto a k-means sobre la esfera;
   3. k vecinos más cercanos: puntos cuyo conjunto de vecinos cambia;
@@ -192,11 +192,13 @@ def cambios_vecinos(df, xy, k=10):
 # ------------------------------------------------------------ áreas
 
 def factores_area(df):
-    """σ² (cuánto se agranda un área) por región: mínimo y máximo."""
+    """σ² (cuánto se agranda un área) en las cabeceras, por región."""
     from . import dirichlet
-    proyectar_optima(0.0, 0.0)            # asegura que la óptima ya esté ajustada
-    lat, lon = df["lat"].to_numpy(), df["lon"].to_numpy()
+
+    # asegura que las dos óptimas ya estén ajustadas
+    proyectar_optima(0.0, 0.0)
     proyectar_optima_envolvente(0.0, 0.0)
+    lat, lon = df["lat"].to_numpy(), df["lon"].to_numpy()
     s2 = {"Mercator": sigma_mercator(lat) ** 2,
           "Lambert INEGI": sigma_lambert(lat) ** 2,
           "Óptima": np.exp(2 * dirichlet._DEFAULT.ln_sigma(lat, lon)),
