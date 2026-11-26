@@ -1,0 +1,19 @@
+% Responsable: Persona 3. ~100 palabras + tabla.
+\section{Herramienta para el cliente}
+
+\begin{table}[ht]
+  \centering
+  \begin{tabular}{lccccc}
+    \toprule
+    Proyección & $\delta$ & Error máx.\ escala (\%) & Error mediana (\%) & Error P95 (\%) & Cambios k-means (\%) \\
+    \midrule
+    Mercator       & -- & -- & -- & -- & -- \\
+    Lambert INEGI  & -- & -- & -- & -- & -- \\
+    Óptima         & -- & -- & -- & -- & -- \\
+    \bottomrule
+  \end{tabular}
+  \caption{Comparación de las tres proyecciones. Fuente: elaboración propia.}
+  \label{tab:comparativa}
+\end{table}
+
+% Script: latlon_a_xy(lat, lon, proyeccion="recomendada") en src/proyecciones/conversion.py

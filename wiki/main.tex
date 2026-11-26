@@ -1,0 +1,60 @@
+\documentclass[11pt,letterpaper]{article}
+
+% ---------- Paquetes ----------
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish,es-noshorthands]{babel}
+\usepackage{lmodern}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{siunitx}
+\usepackage{caption}
+\usepackage[hidelinks]{hyperref}
+\usepackage{listings}
+
+\graphicspath{{figuras/}}
+\decimalpoint
+
+% ---------- Notación (usar estos comandos para que todo sea igual) ----------
+\newcommand{\lat}{\varphi}
+\newcommand{\lon}{\lambda}
+\newcommand{\qiso}{q(\varphi)}
+\newcommand{\region}{\Omega}
+\newcommand{\frontera}{\partial\Omega}
+\newcommand{\dist}{\delta(\Omega)}
+
+% ---------- Datos del documento ----------
+\title{Proyecciones conformes óptimas para el análisis de datos geoespaciales en México}
+\author{
+  Integrante 1 \quad A00000000 \\
+  Integrante 2 \quad A00000000 \\
+  Integrante 3 \quad A00000000 \\
+  Integrante 4 \quad A00000000 \\[1em]
+  Profesor(a): Nombre \\
+  Materia (Grupo 602) \\
+  Tecnológico de Monterrey, Campus Monterrey
+}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\input{secciones/01_resumen}
+\input{secciones/02_introduccion}
+\input{secciones/03_fundamentos}
+\input{secciones/04_solucion}
+\input{secciones/05_implementacion}
+\input{secciones/06_herramienta}
+\input{secciones/07_limitaciones}
+\input{secciones/08_desarrollos}
+\input{secciones/09_conclusiones}
+
+\bibliographystyle{IEEEtran}
+\bibliography{referencias}
+
+\appendix
+\input{secciones/10_apendice}
+
+\end{document}

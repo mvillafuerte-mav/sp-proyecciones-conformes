@@ -1,0 +1,37 @@
+% Responsables: Pasos 1, 2 y teoría del 4: Persona 1. Paso 3: Persona 4.
+% Numérico del 4: Persona 2. Paso 5: Persona 3. ~900 palabras en total.
+\section{Solución del problema del cliente}
+
+\subsection{Paso 1. Mercator}
+% f(w) = R w, sigma = sec(phi). Mercator como logaritmo de la estereográfica.
+
+\subsection{Paso 2. Cónica Conforme de Lambert}
+\begin{equation}
+  \sigma(\lat) = \frac{n F e^{-n q(\lat)}}{\cos\lat}, \qquad
+  n = \frac{\ln(\cos\lat_1/\cos\lat_2)}{q(\lat_2) - q(\lat_1)}
+  \label{eq:lambert}
+\end{equation}
+
+\subsection{Paso 3. Medir la distorsión}
+\begin{equation}
+  \dist = \max_{\region} \ln\sigma - \min_{\region} \ln\sigma
+  \label{eq:delta}
+\end{equation}
+
+\subsection{Paso 4. Proyección óptima de Chebyshev}
+\subsubsection*{Planteamiento}
+\begin{equation}
+  \nabla^2 h = 0 \text{ en } \region, \qquad
+  h = \ln(R\cos\lat) + c \text{ en } \frontera
+  \label{eq:dirichlet}
+\end{equation}
+
+\subsubsection*{Solución numérica}
+% Contorno en el plano w, método, conjugada, integración, delta de la óptima.
+
+% Figura 2 (Persona 3): mapa de sigma para las tres proyecciones.
+
+\subsection{Paso 5. Efecto en los datos del cliente}
+% Datos, error relativo vs haversine por región, k-means, kNN, áreas (sigma^2).
+
+% Figura 3 (Persona 3): distribución del error en distancias.
