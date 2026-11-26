@@ -336,7 +336,16 @@ def ajuste_polinomial(w_frontera, valores, grado):
     return np.max(np.abs(A @ x - valores))
 
 
+def contorno_envolvente(lat_c, lon_c, m=2000):
+    """Envolvente convexa del contorno (incluye los golfos), densificada."""
+    from shapely.geometry import Polygon
+    lo, la = np.asarray(Polygon(np.column_stack([lon_c, lat_c])).convex_hull.exterior.coords).T
+    z = muestrear_frontera(lo[:-1] + 1j * la[:-1], m)
+    return z.imag, z.real
+
+
 _DEFAULT = None
+_ENVOLVENTE = None
 
 
 def proyectar_optima(lat, lon):
@@ -346,6 +355,16 @@ def proyectar_optima(lat, lon):
         from .datos import cargar_contorno
         _DEFAULT = ProyeccionOptima(*cargar_contorno())
     return _DEFAULT.proyectar(lat, lon)
+
+
+def proyectar_optima_envolvente(lat, lon):
+    """Igual, pero óptima sobre la envolvente convexa de México. Su cota de
+    escala vale también para distancias que cruzan los golfos."""
+    global _ENVOLVENTE
+    if _ENVOLVENTE is None:
+        from .datos import cargar_contorno
+        _ENVOLVENTE = ProyeccionOptima(*contorno_envolvente(*cargar_contorno()))
+    return _ENVOLVENTE.proyectar(lat, lon)
 
 
 if __name__ == "__main__":
@@ -398,6 +417,8 @@ if __name__ == "__main__":
     print(sens.to_string(index=False))
     sens.to_csv(tablas / "optima_sensibilidad_contorno.csv", index=False)
 
+    p_env = ProyeccionOptima(*contorno_envolvente(lat_c, lon_c), h=0.001)
+
     i_min = int(np.argmin(p.h - ln_cos_lat(p.w)))
     lat_min, lon_min = latlon_de(p.w[i_min])
     res = {
@@ -415,6 +436,8 @@ if __name__ == "__main__":
         "nodos": len(p.w),
         "nodos_conectados_%": 100 * p.conectados.mean(),
         "segundos": p.segundos,
+        "delta_envolvente": p_env.delta,
+        "error_max_escala_envolvente_%": error_max_escala(p_env.delta),
         "polinomio_residuo_g40": pol[40],
         "polinomio_residuo_g80": pol[80],
         "polinomio_residuo_g160": pol[160],

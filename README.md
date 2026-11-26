@@ -80,6 +80,7 @@ Cada número de la wiki sale de alguno de estos scripts (desde `src/`):
 python -m proyecciones.distorsion     # δ y errores de escala (Paso 3)
 python -m proyecciones.verificacion   # comparación con PROJ y con GRS80
 python -m proyecciones.dirichlet      # proyección óptima (Paso 4) y su validación
+python -m proyecciones.efecto         # efecto en los datos: distancias, k-means, vecinos, áreas (Paso 5)
 ```
 
 Las tablas quedan en `resultados/tablas/`.

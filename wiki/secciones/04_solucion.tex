@@ -216,6 +216,44 @@ Tamps., Dgo., Sin., Zac.), Centro (Ags., Col., CDMX, Gto., Hgo., Jal., Méx.,
 Mich., Mor., Nay., Pue., Qro., SLP, Tlax.) y Sur (Camp., Chis., Gro., Oax.,
 Q.\,Roo, Tab., Ver., Yuc.), con 400, 940 y 1136 puntos.
 
-% Datos, error relativo vs haversine por región, k-means, kNN, áreas (sigma^2).
+\paragraph{Distancias.} Se tomaron 20\,000 pares al azar dentro de cada región
+y otros 20\,000 en todo el país, y para cada uno se comparó la distancia
+euclidiana en la proyección con la haversine. Con Mercator, tal como se usa en
+los mapas web, la mediana del error es de $5.0\,\%$ en el Sur, $6.3\,\%$ en el
+Centro y $11.6\,\%$ en el Norte, con máximos de $18.6\,\%$. Corregir con una
+escala constante no basta (y no cambiaría ningún agrupamiento): en el Norte la
+mediana sigue en $5.2\,\%$, que es justo la variación de $\sec\lat$. Con
+Lambert la mediana va de $0.12\,\%$ a $0.41\,\%$ según la región y el máximo
+es $0.73\,\%$. Con la óptima la mediana baja a $0.02$--$0.06\,\%$, y en los
+pares cuyo arco de círculo máximo queda dentro del territorio (el $88\,\%$ de
+la muestra) el error nunca pasa de $0.092\,\%$, que es exactamente la cota
+$e^{\delta^*/2} - 1$.
+
+La excepción son los pares que cruzan el mar. Entre Baja California Sur y
+Sinaloa, por ejemplo, el error de la óptima llega a $1.8\,\%$: la cota de
+Chebyshev solo vale dentro de $\region$, y el Golfo de California queda fuera.
+Si el mismo problema se resuelve sobre la envolvente convexa de México, que
+incluye los dos golfos, $\delta$ sube a $0.0039$, pero el error máximo es de
+$0.19\,\%$ para \emph{todos} los pares.
+
+\paragraph{Agrupamiento y vecinos.} Se corrió k-means con $k = 10$, $20$ y $50$
+y diez semillas, arrancando cada proyección de los mismos centros que un
+k-means sobre la esfera, y se contaron los puntos que cambian de grupo respecto
+a este (emparejando grupos con el método húngaro). La mediana de cambios es de
+$0.7$ a $1.5\,\%$ con Mercator, de $0.02$ a $0.24\,\%$ con Lambert y de $0$ a
+$0.02\,\%$ con la óptima. Además, k-means es inestable: en 7 de 30 corridas
+con Mercator y en una con Lambert más del $5\,\%$ de los puntos cambiaron de
+grupo porque el algoritmo cayó en otra solución; con la óptima no pasó nunca.
+Para los 10 vecinos más cercanos, el conjunto de vecinos cambia respecto al
+calculado con haversine en el $0.69\,\%$ de los puntos con Mercator
+($1.5\,\%$ en el Norte), en el $0.08\,\%$ con Lambert y en el $0.12\,\%$ con
+la óptima; esta última diferencia viene de dos cabeceras de Baja California
+Sur cuyos vecinos están al otro lado del golfo, y desaparece con la envolvente.
+
+\paragraph{Áreas.} Una proyección conforme multiplica las áreas por
+$\sigma^2$. En Mercator ese factor va de $1.07$ en el Sur a $1.41$ en el Norte,
+así que un mapa de densidad (puntos por unidad de área del plano) subestima la
+densidad del norte hasta en un $24\,\%$ frente a la del sur. Con Lambert el
+factor está entre $0.989$ y $1.015$, y con la óptima entre $0.998$ y $1.002$.
 
 % Figura 3 (Persona 3): distribución del error en distancias.

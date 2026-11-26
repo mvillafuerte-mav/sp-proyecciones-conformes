@@ -1,0 +1,17 @@
+proyeccion,k,cambian_%,region
+Mercator,10,0.6865912762520193,
+Mercator,10,1.5,Norte
+Mercator,10,0.5319148936170213,Centro
+Mercator,10,0.528169014084507,Sur
+Lambert INEGI,10,0.08077544426494346,
+Lambert INEGI,10,0.0,Norte
+Lambert INEGI,10,0.10638297872340426,Centro
+Lambert INEGI,10,0.08802816901408451,Sur
+Óptima,10,0.12116316639741519,
+Óptima,10,0.5,Norte
+Óptima,10,0.0,Centro
+Óptima,10,0.08802816901408451,Sur
+Óptima envolvente,10,0.08077544426494346,
+Óptima envolvente,10,0.0,Norte
+Óptima envolvente,10,0.10638297872340426,Centro
+Óptima envolvente,10,0.08802816901408451,Sur

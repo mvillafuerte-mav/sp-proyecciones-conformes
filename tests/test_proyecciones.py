@@ -97,3 +97,11 @@ def test_optima_mejor_que_lambert_y_conforme():
     e_sigma, e_ne, e_ang = verificar_escala(p, np.array([20.0, 27.0]),
                                             np.array([-95.0, -95.0]), 1000.0)
     assert e_sigma < 1e-3 and e_ne < 1e-3 and e_ang < 0.05
+
+
+def test_kmeans_lloyd_grupos_separados():
+    from proyecciones.efecto import kmeans_lloyd
+    rng = np.random.default_rng(0)
+    X = np.vstack([rng.normal(0, 1, (50, 2)), rng.normal(100, 1, (50, 2))])
+    et = kmeans_lloyd(X, X[[0, 50]])
+    assert (et[:50] == 0).all() and (et[50:] == 1).all()
