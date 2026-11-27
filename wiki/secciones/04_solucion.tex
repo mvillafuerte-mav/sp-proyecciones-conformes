@@ -1,246 +1,133 @@
-% Responsables: Pasos 1, 2 y teoría del 4: Persona 1. Paso 3: Persona 4.
-% Numérico del 4: Persona 2. Paso 5: Persona 3. ~900 palabras en total.
 \section{Solución del problema del cliente}
-
 \subsection{Paso 1. Mercator}
+Para que la longitud avance uniformemente sobre el eje horizontal se toma $f(w)=Rw$. Separar sus partes real e imaginaria y aplicar \eqref{eq:sigma} da
+\begin{equation}
+ x=R\lambda,\qquad y=R\ln\tan(\pi/4+\varphi/2),\qquad
+ f'=R,\qquad \sigma_{\rm M}=\sec\varphi.
+ \label{eq:mercator}
+\end{equation}
+La derivada es constante y no nula: la transformación entre planos es una semejanza. La deformación sobre la esfera aparece en $\cos\varphi$, que disminuye hacia el norte. En el contorno estudiado la escala pasa de 1.03305 a 1.18859.
 
-La proyección más sencilla es tomar $f(w) = R\,w$, es decir,
+Además, \eqref{eq:estereo} y $e^{-q}=\tan(\pi/4-\varphi/2)$ implican $\zeta=Re^{iw}$. Tomando una rama del logaritmo,
 \begin{equation}
-  x = R\,\lon, \qquad y = R\,q(\lat) = R\ln\tan\!\left(\frac{\pi}{4}+\frac{\lat}{2}\right).
-  \label{eq:mercator}
+ \operatorname{Ln}(\zeta/R)=-q+i\lambda=iw,\qquad
+ Rw=-iR\operatorname{Ln}(\zeta/R).
+ \label{eq:mercator_log}
 \end{equation}
-Esta es la proyección de Mercator. Como $f' = R \neq 0$, es conforme, y por
-\eqref{eq:sigma} su factor de escala es
-\begin{equation}
-  \sigma_{\mathrm{M}}(\lat) = \frac{R}{R\cos\lat} = \sec\lat .
-  \label{eq:sigma_mercator}
-\end{equation}
-En México va de $\sec(14.53^\circ) \approx 1.033$ en la frontera con
-Guatemala a $\sec(32.72^\circ) \approx 1.189$ en Baja California: la misma
-distancia se ve un 15\,\% más larga en el norte que en el sur, como
-sospechaban los analistas del cliente. Además, de $\zeta = R\,e^{iw}$ se
-despeja
-\begin{equation}
-  R\,w = -iR\,\log\!\left(\frac{\zeta}{R}\right),
-  \label{eq:mercator_log}
-\end{equation}
-así que Mercator es, salvo una rotación de $-90^\circ$ y un factor $R$, el
-logaritmo complejo de la proyección estereográfica.
+Mercator es entonces el logaritmo de la estereográfica, con rotación y escala. Se coloca el meridiano de corte fuera de México para que la longitud y la rama elegida sean continuas en el dominio.
 
 \subsection{Paso 2. Cónica Conforme de Lambert}
+Para convertir meridianos en rayos y paralelos en arcos se elige $f(w)=RF e^{inw}$, con $0<n<1$ y $F>0$. Al desarrollar la exponencial,
+\begin{equation}
+ f=RF e^{-nq}e^{in\lambda},\qquad
+ f'=inRF e^{inw},\qquad
+ \sigma_{\rm L}=\frac{nF e^{-nq}}{\cos\varphi}.
+ \label{eq:lambert}
+\end{equation}
+La derivada nunca se anula. El ángulo longitudinal $2\pi$ se transforma en $2\pi n$, el sector del cono desenrollado.
 
-Ahora tomemos $f(w) = R F e^{inw}$ con constantes $0 < n < 1$ y $F > 0$. Es
-analítica con $f' \neq 0$, así que es conforme. En forma polar,
+Se eligen dos paralelos de control $\varphi_1,\varphi_2$ y se escribe $q_j=q(\varphi_j)$. Se requieren escalas iguales en ambos. Tomar logaritmos elimina los factores comunes:
 \begin{equation}
-  z = \rho\, e^{i n \lon}, \qquad \rho(\lat) = R F e^{-n q(\lat)} :
-  \label{eq:lambert_polar}
+ \begin{aligned}
+ -nq_1-\ln\cos\varphi_1&=-nq_2-\ln\cos\varphi_2,\\
+ n(q_2-q_1)&=\ln(\cos\varphi_1/\cos\varphi_2),\\
+ n&=\frac{\ln(\cos\varphi_1/\cos\varphi_2)}{q_2-q_1},\qquad
+ F=\frac{\cos\varphi_1 e^{nq_1}}{n}.
+ \end{aligned}\label{eq:lambert_n}
 \end{equation}
-los meridianos se vuelven rayos y los paralelos, arcos: $e^{inw}$ enrolla la
-franja $-\pi < \lon \le \pi$ en un sector de ángulo $2\pi n$, un cono
-desenrollado. Como
-$|e^{inw}| = e^{-nq}$, se tiene $|f'| = nRF\,e^{-nq}$ y
+La última elección impone escala uno en ambos paralelos. Con $17.5^\circ$ y $29.5^\circ$ resulta $n\approx0.3995$. La implementación usa $\theta=n(\lambda-\lambda_0)$, $\rho=RF e^{-nq}$ y
 \begin{equation}
-  \sigma_{\mathrm{L}}(\lat) = \frac{n F e^{-n q(\lat)}}{\cos\lat}, \qquad
-  \ln\sigma_{\mathrm{L}} = \ln(nF) - n\,q(\lat) - \ln\cos\lat .
-  \label{eq:lambert}
+ x=x_0+\rho\sin\theta,\qquad y=y_0+\rho_0-\rho\cos\theta.
+ \label{eq:lcc_xy}
 \end{equation}
-Pedir escala exacta en dos paralelos estándar, $\sigma(\lat_1) = \sigma(\lat_2)$, da
-$-n q(\lat_1) - \ln\cos\lat_1 = -n q(\lat_2) - \ln\cos\lat_2$, de donde
-\begin{equation}
-  n = \frac{\ln(\cos\lat_1/\cos\lat_2)}{q(\lat_2) - q(\lat_1)},
-  \qquad
-  F = \frac{\cos\lat_1\, e^{n q(\lat_1)}}{n},
-  \label{eq:lambert_n}
-\end{equation}
-donde $F$ se eligió para que $\sigma(\lat_1) = \sigma(\lat_2) = 1$. Con los
-paralelos de INEGI, $\lat_1 = 17.5^\circ$ y $\lat_2 = 29.5^\circ$, resulta
-$n \approx 0.3995$.
-
-Entre los dos paralelos la escala es menor que 1. Derivando \eqref{eq:lambert}
-con $dq/d\lat = \sec\lat$,
-\begin{equation}
-  \frac{d\ln\sigma_{\mathrm{L}}}{d\lat} = \frac{\sin\lat - n}{\cos\lat} = 0
-  \quad\Longleftrightarrow\quad \sin\lat = n ,
-  \label{eq:lambert_min}
-\end{equation}
-así que el mínimo de $\sigma_{\mathrm{L}}$ está en $\lat = \arcsin n \approx
-23.5^\circ$, a la mitad del país.
+Aquí $\lambda_0=-102^\circ$, $\varphi_0=12^\circ$, $x_0=2500000$ m y $y_0=0$, con $\rho_0=\rho(\varphi_0)$. Rotación y traslación conservan la escala \cite{snyder1987,proj}.
 
 \subsection{Paso 3. Medir la distorsión}
-
-Para comparar proyecciones se usa la oscilación de $\ln\sigma$ sobre la región,
+Se mide cuánto cambia la escala, independientemente del tamaño del mapa:
 \begin{equation}
-  \dist = \max_{\region} \ln\sigma - \min_{\region} \ln\sigma ,
-  \label{eq:delta}
+ \delta(\Omega)=\max_\Omega\ln\sigma-\min_\Omega\ln\sigma,
+ \qquad E_c=100(e^{\delta/2}-1)\,\%.
+ \label{eq:delta}
 \end{equation}
-que no cambia si el mapa se multiplica por una constante: $e^{\delta}$ es el
-cociente entre la mayor y la menor escala del mapa. Si se reescala para que
-$\sigma$ quede entre $e^{-\delta/2}$ y $e^{\delta/2}$, el error máximo de
-escala es $100\,(e^{\delta/2}-1)\,\%$. Evaluando $\sigma$ en una malla de
-$0.05^\circ$ dentro del contorno y sobre él:
-\begin{itemize}
-  \item \textbf{Mercator.} $\ln\sigma = -\ln\cos\lat$ crece con la latitud,
-    así que $\sigma$ va de $1.0331$ en el extremo sur a $1.1886$ en el norte y
-    $\delta_{\mathrm{M}} = 0.140$. Aun reescalado, el error máximo es de
-    $7.3\,\%$; con escala exacta en el ecuador, como en los mapas web, llega
-    a $18.9\,\%$.
-  \item \textbf{Lambert de INEGI.} Por \eqref{eq:lambert_min}, $\sigma$ baja a
-    $0.9945$ en $23.5^\circ$\,N y sube a $1.0077$ en el extremo norte (en el
-    extremo sur vale $1.0067$), así que $\delta_{\mathrm{L}} = 0.0132$. El error
-    máximo es de $0.66\,\%$ reescalado y de $0.77\,\%$ con la escala de INEGI.
-\end{itemize}
-Lambert distorsiona unas 10 veces menos que Mercator.
+Multiplicar el mapa por una constante suma una constante a $\ln\sigma$ y deja $\delta$ intacta. $E_c$ supone centrar los extremos logarítmicos alrededor de cero. No es el error de la proyección sin reescalar.
 
-\subsection{Paso 4. Proyección óptima de Chebyshev}
-\label{sec:paso4}
-\subsubsection*{Planteamiento}
-
-La pregunta es qué función analítica da la menor $\dist$ sobre México.
-Tomando logaritmo en \eqref{eq:sigma},
+En Mercator, $-\ln\cos\varphi$ crece con la latitud. Lambert exige además revisar un mínimo interior:
 \begin{equation}
-  \ln\sigma = h - \ln(R\cos\lat), \qquad h = \ln|f'| ,
-  \label{eq:lnsigma}
+ \frac{d\ln\sigma_{\rm L}}{d\varphi}
+ =\frac{\sin\varphi-n}{\cos\varphi}=0
+ \quad\Longleftrightarrow\quad \varphi=\arcsin n.
+ \label{eq:lcc_min}
 \end{equation}
-donde $h$ es armónica en $\region$ por \eqref{eq:lnfprima}. El segundo término
-no depende de la proyección: es el factor de la métrica \eqref{eq:metrica}, y
-en él está la curvatura de la esfera. Como $\cos\lat = \operatorname{sech} q$,
-se tiene $-\ln(R\cos\lat) = \ln\cosh q - \ln R$, y con $\nabla^2 h = 0$,
+El signo cambia de negativo a positivo, por lo que es un mínimo. Evaluando una malla interior de $0.05^\circ$ y el contorno, se obtiene $\delta_{\rm M}=0.14025$ y $\delta_{\rm L}=0.01319$. Los errores centrados son $7.26\,\%$ y $0.66\,\%$. Sin reescalar alcanzan $18.86\,\%$ y $0.77\,\%$.
+
+\subsection{Paso 4. La proyección óptima de Chebyshev}
+Definamos $h=\ln|f'|$. Para expresar la escala en las coordenadas del plano $w$ hay que escribir también $\cos\varphi$ en función de $q$. Sea $t=\pi/4+\varphi/2$. Como $e^q=\tan t$,
 \begin{equation}
-  \nabla^2_w \ln\sigma = \frac{d^2}{dq^2}\ln\cosh q = \operatorname{sech}^2 q
-  = \cos^2\lat > 0 ,
-  \label{eq:subarmonica}
+ \cosh q:=\frac{e^q+e^{-q}}2
+ =\frac{\tan t+\cot t}2
+ =\frac1{2\sin t\cos t}
+ =\sec\varphi,\qquad \operatorname{sech}q:=\frac1{\cosh q}.
+ \label{eq:hiperbolicas}
 \end{equation}
-así que $\ln\sigma$ \emph{no} es armónica, sino subarmónica, para cualquier
-proyección conforme. Por el principio del máximo, su máximo siempre está en
-la frontera $\frontera$.
-
-El teorema de Chebyshev, enunciado en 1856 y demostrado por D.~A. Grave en
-1896, dice que la proyección óptima es la que tiene escala constante en la
-frontera; aquí seguimos la demostración de Milnor \cite{milnor1969}. Por
-\eqref{eq:lnsigma}, pedir $\sigma = e^{c}$ en $\frontera$ es lo mismo que
+Por tanto, $\cos\varphi=\operatorname{sech}q$. Sustituir en \eqref{eq:sigma} da $\ell:=\ln\sigma=h-\ln R+\ln\cosh q$. El término adicional depende solo de $q$. Usando $\sinh q=(e^q-e^{-q})/2$ al derivarlo,
 \begin{equation}
-  \nabla^2 h = 0 \text{ en } \region, \qquad
-  h = \ln(R\cos\lat) + c \text{ en } \frontera ,
-  \label{eq:dirichlet}
+ \begin{aligned}
+ \Delta_w\ell&=\Delta_w h+\frac{d^2}{dq^2}\ln\cosh q\\
+ &=0+\frac{\cosh^2q-\sinh^2q}{\cosh^2q}
+ =\operatorname{sech}^2q>0.
+ \end{aligned}\label{eq:subarmonica}
 \end{equation}
-que es un problema de Dirichlet con solución única $h^*$. La constante $c$
-solo multiplica el mapa por $e^{c}$ y no cambia $\dist$.
-
-\paragraph{Por qué es óptima.} Sea $\sigma^*$ el factor de la proyección de
-Chebyshev. Por \eqref{eq:subarmonica}, el máximo de $\ln\sigma^*$ es $c$ y se
-alcanza en $\frontera$; sea $m^*$ su mínimo, alcanzado en un punto $p$, de modo
-que $\delta^* = c - m^*$. El punto $p$ es interior: si estuviera en la
-frontera, $\ln\sigma^*$ valdría $c$ en todo $\region$, lo que contradice
-\eqref{eq:subarmonica}. Cualquier otra proyección conforme tiene
-$\ln\sigma = \ln\sigma^* + u$ con $u = h - h^*$ armónica. Si $b \in \frontera$
-es donde $u$ alcanza su máximo en la frontera, el principio del máximo da
-$u(b) \geq u(p)$, y entonces
+Lo armónico es $h$, mientras que $\ell$ es subarmónica. Su máximo está en la frontera. Exigir escala constante $e^c$ en ella equivale a resolver
 \begin{equation}
-  \delta \;\geq\; \ln\sigma(b) - \ln\sigma(p)
-  = \bigl(c + u(b)\bigr) - \bigl(m^* + u(p)\bigr)
-  \;\geq\; c - m^* = \delta^* .
-  \label{eq:optimalidad}
+ \Delta h^*=0\ \text{en }\Omega,\qquad
+ h^*=\ln(R\cos\varphi)+c\ \text{en }\partial\Omega.
+ \label{eq:dirichlet}
 \end{equation}
-La igualdad exige $u(b) = u(p)$, es decir, que $u$ alcance su máximo en un
-punto interior, lo que solo pasa si $u$ es constante. La proyección de
-Chebyshev es entonces la única óptima, salvo escala, rotación y traslación
-\cite{milnor1969,bermejo2005}.
+Esta condición minimiza la oscilación de escala conforme \cite{milnor1969,bermejo2005}. Definamos $\ell^*=h^*-\ln(R\cos\varphi)$ y $\delta^*=\max_\Omega\ell^*-\min_\Omega\ell^*$. Para demostrar la optimalidad, sea $p$ un mínimo de $\ell^*$, de valor $m^*$. Su máximo es $c$ en el borde. Como \eqref{eq:subarmonica} impide que $\ell^*$ sea constante, $m^*<c$ y $p$ es interior.
 
-Para construirla, la conjugada $\tilde h^*$ da $f' = \exp(h^* + i\tilde h^*)$,
-y como $\region$ es simplemente conexa, $f = \int f'\,dw$ no depende del
-camino.
-
-\subsubsection*{Solución numérica}
-
-El contorno de México continental (2061 vértices) se lleva al plano $w$ con
-$w = \lon + i\,q(\lat)$, midiendo $\lon$ desde $102^\circ$\,O. Ahí se
-resuelve \eqref{eq:dirichlet} con $c = 0$ por diferencias finitas
-(sección~\ref{sec:metodo}) con paso $0.001$ (unos 6~km), en menos de un
-segundo. La conjugada sale de integrar $d\tilde h = -h_q\,d\lon + h_\lon\,dq$
-sobre la malla, y $f$ de integrar $f' = R\exp(h + c + i\tilde h)$, con $f = 0$
-y el norte hacia arriba en $(23.5^\circ$\,N, $102^\circ$\,O$)$ y $c$ elegida
-para centrar la escala en 1.
-
-El resultado confirma la teoría: $\ln\sigma \le 0$ en todo el interior
-(su máximo es $-9\times10^{-10}$), como exige \eqref{eq:subarmonica}, y su
-mínimo está en $24.0^\circ$\,N, $102.3^\circ$\,O. La distorsión de la
-proyección óptima es
+Para otra proyección admisible, $a=h-h^*$ es armónica. Si $b$ maximiza $a$ en la frontera, el principio del máximo da $a(b)\ge a(p)$. Luego
 \begin{equation}
-  \delta^* = 0.00184 ,
-  \label{eq:delta_optima}
+ \delta\ge\ell(b)-\ell(p)
+ =c-m^*+a(b)-a(p)\ge c-m^*=\delta^*.
+ \label{eq:optimalidad}
 \end{equation}
-así que $\sigma$ queda entre $0.99908$ y $1.00092$: un error máximo de escala
-de $0.092\,\%$. Su distorsión es 7 veces menor que la de Lambert
-($\delta = 0.0132$) y 76 veces menor que la de Mercator ($\delta = 0.140$). El
-valor no cambia al refinar la malla ni al simplificar más o menos el contorno
-(queda entre $0.001843$ y $0.001844$). En la figura~\ref{fig:sigma}, Mercator y
-Lambert cambian por franjas de latitud, mientras que la óptima es mínima en
-el centro y sube por igual hacia todo el borde.
+La igualdad exige un máximo interior de $a$, así que $a$ es constante. La solución es única en escala, salvo semejanzas del plano, dentro de esta formulación conforme.
 
-\begin{figure}[ht]
-  \centering
-  \includegraphics[width=\linewidth]{fig2_sigma}
-  \caption{Factor de escala sobre México para cada proyección, reescalado para
-    quedar centrado en 1, como desviación en por ciento; la escala de color
-    cambia de panel a panel. En la óptima sobre México $\sigma$ es
-    prácticamente constante en todo el borde (condición de Chebyshev); en la de
-    la envolvente lo es sobre la envolvente convexa. Fuente: elaboración propia.}
-  \label{fig:sigma}
+Finalmente, fijando un punto base $w_0$ y su imagen $f(w_0)$, se recupera el mapa mediante
+\begin{equation}
+ d\widetilde h^*=-h_q^*\,d\lambda+h_\lambda^*\,dq,
+ \qquad f'=e^{h^*+i\widetilde h^*},\qquad
+ f(w)=f(w_0)+\int_{w_0}^w f'(\xi)\,d\xi.
+ \label{eq:reconstruccion}
+\end{equation}
+La primera integral recupera la conjugada como en \eqref{eq:potencial}. Para reconstruir $f$, se escribe $f'=A+iB$, con $A=\operatorname{Re}f'$ y $B=\operatorname{Im}f'$, y se integra $f'\,dw=(A\,d\lambda-B\,dq)+i(B\,d\lambda+A\,dq)$. Green da integrandos $-B_\lambda-A_q=0$ y $A_\lambda-B_q=0$ por Cauchy--Riemann. Cada integral cerrada es nula y \eqref{eq:caminos} garantiza otra vez la independencia de camino.
+
+Numéricamente se obtiene $\delta^*=0.00184347$, aproximadamente siete veces menor que Lambert. Centrar la escala produce $0.999079\le\sigma\le1.000922$ en la solución continua aproximada. Resolver sobre la envolvente del país, incluyendo los golfos, aumenta $\delta$ a $0.00385979$.
+
+\begin{figure}[htbp]\centering
+\includegraphics[width=\linewidth]{fig2_sigma}
+\caption{Desviación de escala centrada en cada proyección. Cada panel tiene su propia escala de color. Fuente: cálculo del repositorio sobre el contorno de INEGI.}\label{fig:sigma}
 \end{figure}
 
-\subsection{Paso 5. Efecto en los datos del cliente}
+\subsection{Paso 5. Consecuencias para los datos}
+El Catálogo de INEGI, consultado el 26 de noviembre de 2026, aporta 2478 cabeceras. Se excluyen dos insulares y quedan 2476 \cite{inegi_catalogo}. Norte reúne BC, BCS, Coahuila, Chihuahua, Durango, NL, Sinaloa, Sonora, Tamaulipas y Zacatecas. Sur reúne Campeche, Chiapas, Guerrero, Oaxaca, Quintana Roo, Tabasco, Veracruz y Yucatán. Centro contiene los estados restantes. Sus tamaños son 400, 1136 y 940.
 
-\paragraph{Datos.} La región $\region$ es México continental, sin islas: la
-unión de las 32 entidades del Marco Geoestadístico del INEGI
-\cite{inegi_catalogo}, simplificada a 1~km (2061 vértices). Como datos se usan
-las cabeceras de los 2478 municipios, tomadas del Catálogo Único de Claves
-Geoestadísticas del INEGI (consultado el 26 de noviembre de 2026; en las
-alcaldías de la Ciudad de México, la localidad sede). Sin las dos que están en
-islas quedan 2476 puntos, que se asignan por entidad a tres regiones: Norte
-(BC, BCS, Son., Chih., Coah., NL, Tamps., Dgo., Sin., Zac.; 400 puntos), Sur
-(Camp., Chis., Gro., Oax., Q.\,Roo, Tab., Ver., Yuc.; 1136) y Centro (el
-resto; 940).
+Se generan 20000 pares por región y otros 20000 nacionales, con semilla cero, eliminando autopares. La referencia esférica y el error firmado son
+\begin{equation}
+ \begin{aligned}
+ a&=\sin^2\!\frac{\Delta\varphi}{2}
+ +\cos\varphi_i\cos\varphi_j\sin^2\!\frac{\Delta\lambda}{2},\\
+ d_H&=2R\arcsin\sqrt a,\qquad
+ \varepsilon_{ij}=100\left(\frac{\|f_i-f_j\|}{d_H}-1\right)\,\%.
+ \end{aligned}\label{eq:haversine}
+\end{equation}
+La figura presenta errores absolutos. Mercator tiene medianas de $11.64\,\%$, $6.30\,\%$ y $4.97\,\%$ en Norte, Centro y Sur. Lambert baja a $0.41\,\%$, $0.34\,\%$ y $0.12\,\%$. La óptima continental alcanza $0.04\,\%$, $0.02\,\%$ y $0.06\,\%$, pero llega a $1.81\,\%$ en pares del Norte que cruzan el mar. La envolvente mantuvo todos los pares muestreados por debajo de $0.20\,\%$. Son resultados muestrales, no una certificación universal de distancias.
 
-\paragraph{Distancias.} Se tomaron 20\,000 pares al azar dentro de cada región
-y 20\,000 en todo el país, y se comparó la distancia euclidiana en cada
-proyección con la haversine (figura~\ref{fig:errores}). Con Mercator la mediana
-del error es de $5.0\,\%$ en el Sur, $6.3\,\%$ en el Centro y $11.6\,\%$ en el
-Norte, con máximos de $18.6\,\%$; corregir con una escala constante no basta,
-porque en el Norte la mediana sigue en $5.2\,\%$. Con
-Lambert la mediana va de $0.12\,\%$ a $0.41\,\%$ según la región y el máximo
-es $0.73\,\%$. Con la óptima la mediana baja a $0.02$--$0.06\,\%$, y en los
-pares cuyo arco de círculo máximo queda dentro del territorio (el $88\,\%$ de
-la muestra) el error nunca pasa de $0.092\,\%$, que es exactamente la cota
-$e^{\delta^*/2} - 1$.
+Se ejecutó Lloyd para $k=10,20,50$, con diez semillas y los mismos puntos iniciales. La referencia esférica asigna por producto punto y normaliza los centros: optimiza similitud angular, no exactamente la suma de distancias geodésicas cuadradas. Las etiquetas se emparejan mediante el método húngaro. Para $k=20$, las medianas de cambios son $0.67\,\%$, $0.24\,\%$ y $0.02\,\%$ para Mercator, Lambert y óptima. Con diez vecinos por haversine cambian los conjuntos en $0.69\,\%$, $0.08\,\%$ y $0.12\,\%$: menor distorsión local no asegura mejor resultado en cada tarea.
 
-La excepción son los pares que cruzan el mar: entre Baja California Sur y
-Sinaloa el error de la óptima llega a $1.8\,\%$, porque la cota solo vale
-dentro de $\region$. Resolviendo el problema sobre la envolvente convexa de
-México, que incluye los dos golfos, $\delta$ sube a $0.0039$, pero el error
-máximo en \emph{todos} los pares de la muestra es de $0.19\,\%$.
+El determinante de la semejanza local es $\sigma^2$. Por tanto, un área se transforma en $dA_{mapa}=\sigma^2dA_{Tierra}$ y su densidad aparente se divide por $\sigma^2$. Mercator presenta factores entre aproximadamente 1.07 y 1.41 en las cabeceras. Comparar densidades sin corregirlos introduce un sesgo geográfico.
 
-\paragraph{Agrupamiento y vecinos.} Se corrió k-means ($k = 10$, $20$ y $50$,
-diez semillas) desde los mismos centros que un k-means sobre la esfera y se
-contaron los puntos que cambian de grupo (emparejando grupos con el método
-húngaro). La mediana de cambios es de $0.7$--$1.5\,\%$ con Mercator,
-$0.02$--$0.24\,\%$ con Lambert y $0$--$0.02\,\%$ con la óptima; además, en 7 de
-30 corridas con Mercator y en una con Lambert más del $5\,\%$ de los puntos
-cambió de grupo porque k-means cayó en otra solución. El conjunto de los 10
-vecinos más cercanos cambia en el $0.69\,\%$ de los puntos con Mercator, el
-$0.08\,\%$ con Lambert y el $0.12\,\%$ con la óptima (dos cabeceras de Baja
-California Sur con vecinos al otro lado del golfo).
-
-\paragraph{Áreas.} Las áreas se multiplican por $\sigma^2$. En las cabeceras,
-con Mercator ese factor va de $1.07$ en el Sur a $1.41$ en el Norte, así que un
-mapa de densidad subestima la del norte hasta en un $24\,\%$ frente al sur. Con Lambert el
-factor está entre $0.989$ y $1.015$, y con la óptima entre $0.998$ y $1.002$.
-
-\begin{figure}[ht]
-  \centering
-  \includegraphics[width=\linewidth]{fig3_errores}
-  \caption{Error relativo en distancias entre pares de cabeceras, por región
-    y proyección, en escala logarítmica. La caja va del percentil 25 al 75, la
-    línea blanca es la mediana, los bigotes van del percentil 5 al 95 y la marca
-    aislada es el máximo. Fuente: elaboración propia con datos del INEGI.}
-  \label{fig:errores}
+\begin{figure}[htbp]\centering
+\includegraphics[width=\linewidth]{fig3_errores}
+\caption{Errores absolutos de distancia: mediana, intervalo intercuartílico, percentiles 5--95 y máximo, por región. Eje vertical logarítmico. Fuente: pares de cabeceras de INEGI procesados en el repositorio.}\label{fig:errores}
 \end{figure}

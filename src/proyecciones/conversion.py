@@ -16,8 +16,7 @@ Proyecciones disponibles:
   "epsg6372"           Lambert oficial de INEGI sobre el elipsoide GRS80 (vía PROJ);
                        compatible con cualquier SIG
   "optima_envolvente"  óptima de Chebyshev sobre la envolvente convexa de México
-                       (error de escala ≤ 0.19 %, también para pares que cruzan
-                       los golfos)
+                       (error de escala local aproximado ≤ 0.20 % sobre la esfera)
   "optima"             óptima sobre México continental (≤ 0.092 % dentro del
                        territorio, pero peor para pares que cruzan el mar)
   "lambert"            Lambert de INEGI (EPSG:6372) sobre la esfera
@@ -34,19 +33,8 @@ import numpy as np
 
 from .clasicas import lambert, mercator
 
-MODELOS = Path(__file__).resolve().parents[2] / "resultados" / "modelos"
 ARCHIVOS = {"optima": "optima_mexico.npz", "optima_envolvente": "optima_envolvente.npz"}
-_cache = {}
-
-# un punto a más de ~0.01 en w (≈ 60 km) de la malla está fuera de la región
-DISTANCIA_AVISO = 0.01
-
-
-def _modelo(nombre):
-    if nombre not in _cache:
-        from .dirichlet import ProyeccionOptima
-        _cache[nombre] = ProyeccionOptima.cargar(MODELOS / ARCHIVOS[nombre])
-    return _cache[nombre]
+from .dirichlet import obtener_modelo
 
 
 def latlon_a_xy(lat, lon, proyeccion="recomendada"):
@@ -69,6 +57,10 @@ def latlon_a_xy(lat, lon, proyeccion="recomendada"):
     x = np.full(la.shape, np.nan)
     y = np.full(la.shape, np.nan)
     ok = np.isfinite(la) & np.isfinite(lo)
+    if np.any(np.isinf(la) | np.isinf(lo)):
+        raise ValueError("Las coordenadas no pueden ser infinitas.")
+    if np.any(ok & ((np.abs(la) >= 90) | (np.abs(lo) > 180))):
+        raise ValueError("Se requiere -90 < lat < 90 y -180 <= lon <= 180.")
     if ok.any():
         if proyeccion == "mercator":
             x[ok], y[ok] = mercator(la[ok], lo[ok])
@@ -77,10 +69,10 @@ def latlon_a_xy(lat, lon, proyeccion="recomendada"):
         elif proyeccion == "epsg6372":
             from pyproj import Transformer
             t = Transformer.from_crs(4326, 6372, always_xy=True)
-            x[ok], y[ok] = t.transform(lo[ok], la[ok])
+            x[ok], y[ok] = t.transform(lo[ok], la[ok], errcheck=True)
         else:
-            m = _modelo(proyeccion)
-            lejos = m.distancia_a_malla(la[ok], lo[ok]) > DISTANCIA_AVISO
+            m = obtener_modelo(proyeccion)
+            lejos = ~m.contiene(la[ok], lo[ok])
             if np.any(lejos):
                 warnings.warn(f"{int(lejos.sum())} punto(s) quedan fuera de la región "
                               "donde se ajustó la proyección; ahí no hay garantía de escala.")
@@ -94,6 +86,8 @@ def convertir_csv(entrada, salida, proyeccion="recomendada", col_lat="lat", col_
     """Lee un CSV, agrega columnas x, y (metros) y lo guarda."""
     import pandas as pd
 
+    if Path(entrada).resolve() == Path(salida).resolve():
+        raise ValueError("La salida debe ser diferente del archivo de entrada.")
     df = pd.read_csv(entrada)
     df["x"], df["y"] = latlon_a_xy(df[col_lat].to_numpy(), df[col_lon].to_numpy(), proyeccion)
     df.to_csv(salida, index=False)
@@ -140,5 +134,6 @@ if __name__ == "__main__":
     if args.entrada is None:
         print(ejemplo())
     else:
-        convertir_csv(args.entrada, args.salida or args.entrada.replace(".csv", "_xy.csv"),
+        entrada = Path(args.entrada)
+        convertir_csv(entrada, args.salida or entrada.with_name(entrada.stem + "_xy.csv"),
                       args.proyeccion, args.lat, args.lon)

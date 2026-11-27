@@ -1,36 +1,20 @@
-% Responsable: Persona 3. ~100 palabras + tabla.
 \section{Herramienta para el cliente}
-\label{sec:herramienta}
-
-La tabla~\ref{tab:comparativa} resume las cuatro opciones. Las columnas de
-distancias, k-means y vecinos se calcularon con las cabeceras municipales
-(Paso~5); k-means corresponde a $k = 20$ (mediana de diez semillas).
-
-\begin{table}[ht]
-  \centering
-  \footnotesize
-  \setlength{\tabcolsep}{4pt}
-  \input{tablas/tabla_comparativa}
-  \caption{Comparación de las proyecciones sobre México. El error máximo de
-    escala supone el mapa reescalado para centrar $\sigma$ en 1. El máximo de
-    la óptima (México) viene de pares que cruzan el Golfo de California.
-    Fuente: elaboración propia con datos del INEGI.}
-  \label{tab:comparativa}
+La tabla distingue error de escala centrado y error muestral en distancias sin ese reescalamiento. Incluye la variante de envolvente para mostrar el efecto de elegir el dominio.
+\begin{table}[htbp]\centering
+\resizebox{\linewidth}{!}{\input{tablas/tabla_comparativa}}
+\caption{Comparación esférica. Distancias nacionales absolutas y cambios de k-means con $k=20$, mediana de diez semillas. Fuente: resultados reproducidos del repositorio con datos de INEGI.}\label{tab:comparativa}
 \end{table}
 
-Para convertir coordenadas, el repositorio incluye la función
-\texttt{latlon\_a\_xy}, del módulo \texttt{conversion} del paquete
-\texttt{proyecciones}. Recibe
-grados (números, arreglos o las columnas de un CSV) y devuelve $x, y$ en
-metros. La opción recomendada es EPSG:6372 (sección~\ref{sec:recomendacion});
-también ofrece la óptima sobre la envolvente, cuyo modelo ajustado viene en el
-repositorio, la óptima sobre México, Lambert esférica y Mercator. Avisa si un
-punto queda fuera de la región de la óptima, y las filas sin coordenadas
-quedan vacías. Desde Python y desde la terminal:
-\begin{lstlisting}[basicstyle=\footnotesize\ttfamily,columns=fullflexible]
-x, y = latlon_a_xy(lat, lon, proyeccion="recomendada")
-python -m proyecciones.conversion clientes.csv clientes_xy.csv
+\texttt{latlon\_a\_xy} recibe grados y devuelve metros. La opción recomendada transforma coordenadas geográficas EPSG:4326 a EPSG:6372. Las óptimas incluyen el polígono de ajuste y advierten si hay extrapolación. Coordenadas inválidas y sobrescritura de la entrada se rechazan. Desde \texttt{src/}:
+\begin{lstlisting}
+python -m proyecciones.conversion entrada.csv salida.csv
 \end{lstlisting}
-Con la óptima sobre la envolvente, la distancia en el plano entre la Ciudad
-de México y Monterrey es de 704.78~km, contra 705.93~km sobre la esfera
-($-0.16\,\%$).
+Para reproducir las tres ciudades con la envolvente:
+\begin{lstlisting}
+x, y = latlon_a_xy([19.4326,25.6866,20.9674],
+                  [-99.1332,-100.3161,-89.5926],
+                  proyeccion="optima_envolvente")
+# metros: CDMX (300640.7, -448560.3)
+# Monterrey (168512.0, 243726.5)
+# Merida (1285599.3, -228982.5)
+\end{lstlisting}

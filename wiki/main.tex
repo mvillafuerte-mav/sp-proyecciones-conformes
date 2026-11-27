@@ -1,59 +1,34 @@
-\documentclass[11pt,letterpaper]{article}
-
-% ---------- Paquetes ----------
-\usepackage[utf8]{inputenc}
-\usepackage[T1]{fontenc}
+\documentclass[12pt]{article}
+\usepackage[paperwidth=596bp,paperheight=842bp,left=71bp,right=73bp,top=109bp,bottom=65bp,headheight=40bp,headsep=14bp]{geometry}
+\usepackage{fontspec}\setmainfont{Times New Roman}
+\let\porcentajeOriginal\%
+\AtBeginDocument{\let\%\porcentajeOriginal}
 \usepackage[spanish,es-noshorthands,es-tabla]{babel}
-\usepackage{lmodern}
-\usepackage[margin=2.5cm]{geometry}
-\usepackage{amsmath,amssymb,amsthm}
-\usepackage{graphicx}
-\usepackage{booktabs}
-\usepackage{siunitx}
-\usepackage{caption}
-\usepackage[hidelinks]{hyperref}
-\usepackage{listings}
-
-\graphicspath{{figuras/}}
-\decimalpoint
-
-% ---------- Notación (usar estos comandos para que todo sea igual) ----------
-\newcommand{\lat}{\varphi}
-\newcommand{\lon}{\lambda}
-\newcommand{\qiso}{q(\varphi)}
-\newcommand{\region}{\Omega}
-\newcommand{\frontera}{\partial\Omega}
-\newcommand{\dist}{\delta(\Omega)}
-
-% ---------- Datos del documento ----------
-\newcommand{\titulo}{Proyecciones conformes óptimas para el análisis de datos geoespaciales en México}
-
+\usepackage{amsmath,amssymb,graphicx,booktabs,siunitx,caption,pdfpages,fancyhdr,xcolor}
+\usepackage[hidelinks]{hyperref}\usepackage{xurl}\usepackage{listings}\usepackage{titlesec}
+\definecolor{tec}{RGB}{0,51,102}
+\pagestyle{fancy}\fancyhf{}
+\fancyhead[L]{\includegraphics[width=123.75bp]{recursos/logo-interior.png}}
+\fancyhead[R]{\color{tec}\bfseries\fontsize{9}{10}\selectfont\shortstack[r]{F1009.602 | Análisis de métodos\\matemáticos para la física}}
+\renewcommand{\headrulewidth}{1bp}
+\titleformat{\section}{\bfseries\fontsize{13}{15}\selectfont}{\thesection.}{0.5em}{}
+\titleformat{\subsection}{\bfseries\fontsize{12}{14}\selectfont}{\thesubsection.}{0.5em}{}
+\titlespacing*{\section}{0pt}{12pt}{6pt}\titlespacing*{\subsection}{0pt}{8pt}{4pt}
+\setlength{\parindent}{0pt}\setlength{\parskip}{6pt}\setlength{\emergencystretch}{2em}
+\captionsetup{font=small,labelfont=bf}
+\lstset{basicstyle=\small\ttfamily,breaklines=true,columns=fullflexible}
+\graphicspath{{figuras/}}\decimalpoint
+\newcommand{\lat}{\varphi}\newcommand{\lon}{\lambda}\newcommand{\region}{\Omega}
+\newcommand{\frontera}{\partial\Omega}\newcommand{\dist}{\delta(\Omega)}
+\renewcommand{\floatpagefraction}{.9}\renewcommand{\topfraction}{.95}\renewcommand{\textfraction}{.05}
 \begin{document}
-
-\begin{titlepage}
-  \centering
-  \vspace*{1.5cm}
-  {\large Tecnológico de Monterrey, Campus Monterrey\par}
-  \vspace{0.4cm}
-  {\normalsize Análisis de métodos matemáticos para la física (Gpo.~602)\par}
-  \vspace{3cm}
-  {\LARGE\bfseries \titulo\par}
-  \vspace{0.8cm}
-  {\large Wiki técnica\par}
-  \vfill
-  \begin{tabular}{ll}
-    Integrante 1 & A00000000 \\
-    Integrante 2 & A00000000 \\
-    Integrante 3 & A00000000 \\
-    Integrante 4 & A00000000 \\
-  \end{tabular}
-  \par\vspace{1.5cm}
-  {Profesor: Dr. Héctor Medel Cobaxin\par}
-  \vspace{0.4cm}
-  {28 de noviembre de 2026\par}
-  \vspace*{1cm}
-\end{titlepage}
-
+\input{datos_portada}
+\includepdf[pages=1,pagecommand={\thispagestyle{empty}\AddToShipoutPictureFG*{\AtPageUpperLeft{\setlength{\unitlength}{1bp}
+\put(0,-484){\makebox(596,0){\integranteUno}}
+\put(0,-501.65){\makebox(596,0){\integranteDos}}
+\put(0,-519.30){\makebox(596,0){\integranteTres}}
+\put(0,-536.95){\makebox(596,0){\integranteCuatro}}
+}}}]{recursos/portada-fondo.pdf}
 \input{secciones/01_resumen}
 \input{secciones/02_introduccion}
 \input{secciones/03_fundamentos}
@@ -68,6 +43,7 @@
 \bibliography{referencias}
 
 \appendix
+\input{secciones/12_teoremas}
 \input{secciones/10_apendice}
 \input{secciones/11_nota_ia}
 

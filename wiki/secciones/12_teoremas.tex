@@ -1,0 +1,27 @@
+\section{Teoremas de apoyo}
+\subsection{Teorema de Green}\label{an:green}
+Si $A$ es una región plana con frontera positiva, simple y a trozos suave, y $P,Q$ son $C^1$ en un abierto que la contiene, entonces \cite{marsden1999}
+\begin{equation}
+ \oint_{\partial A}P\,dx+Q\,dy
+ =\iint_A(Q_x-P_y)\,dx\,dy.
+ \label{eq:green_anexo}
+\end{equation}
+La orientación positiva deja el interior a la izquierda del recorrido. En \eqref{eq:green}, $P=-h_y$, $Q=h_x$ y el integrando es $\Delta h$. Las hipótesis se cumplen en subregiones interiores porque $h$ es suave.
+
+\subsection{Independencia de camino y potencial}\label{an:potencial}
+Para un campo continuo en un dominio abierto conexo, son equivalentes: todas sus integrales cerradas son cero y sus integrales dependen solo de los extremos. La primera propiedad implica la segunda al unir dos caminos como en \eqref{eq:caminos}. El recíproco se obtiene comparando cualquier lazo con el camino constante en su punto inicial.
+
+Definir el potencial como una integral desde un punto fijo permite aplicar el teorema fundamental de las integrales de línea: su gradiente es el campo integrado. Dos potenciales del mismo campo tienen diferencia constante. Fijar el valor inicial elimina esa libertad. La simple conexidad se utiliza para deducir la integral cerrada nula mediante Green, no para afirmar que todos los campos tienen potencial.
+
+\subsection{Principio del máximo y unicidad de Dirichlet}\label{an:maximo}
+Una función armónica continua en el cierre de un dominio acotado alcanza sus extremos en la frontera, salvo que sea constante. Para una subarmónica $\Delta u\ge0$, la afirmación se aplica al máximo. Si alcanza un máximo interior y es armónica en un dominio conexo, es constante \cite{ahlfors1979}.
+
+Si $h_1,h_2$ resuelven el mismo problema de Dirichlet, $d=h_1-h_2$ es armónica y nula en la frontera. Aplicar el principio a $d$ y a $-d$ da $d\le0$ y $-d\le0$. Luego $d=0$. Esta unicidad no es la de una conjugada: allí se fija un gradiente y queda una constante libre, mientras que aquí los valores de frontera ya la fijan.
+
+\subsection{Existencia del logaritmo analítico}\label{an:log}
+Si $F$ es analítica y no nula en un dominio simplemente conexo, existe una analítica $L$ con $e^L=F$ \cite{ahlfors1979}. En efecto, $F'/F$ es analítica. Cauchy--Riemann y Green, aplicados a las partes de su integral compleja, dan una primitiva $G$ por independencia de camino. Entonces
+\begin{equation}
+ G'=F'/F,\qquad (e^{-G}F)'=e^{-G}(F'-G'F)=0.
+ \label{eq:existencia_log}
+\end{equation}
+Así, $e^{-G}F=C\ne0$. Eligiendo un logaritmo del número constante $C$ se obtiene $L=G+\operatorname{Ln}C$. En el cuerpo se usa $F=f'$. La condición $F\ne0$ evita la división por cero y la simple conexidad permite definir $G$ globalmente.

@@ -1,121 +1,161 @@
-% Responsable: Persona 1. ~450 palabras.
 \section{Fundamentos teóricos}
-\label{sec:fundamentos}
-
-\subsection{Funciones analíticas y ecuaciones de Cauchy--Riemann}
-
-Una función $f(z) = u + i\,v$ es analítica si tiene derivada compleja en
-cada punto, lo que equivale a que $u$ y $v$ sean diferenciables y cumplan
+\subsection{Por qué una función compleja permite estudiar la deformación}
+Para describir cómo se transforma un punto y su entorno, iniciemos con una función $f:\mathcal D\subset\mathbb C\to\mathbb C$ en un dominio abierto. Su entrada $z$ tiene dos coordenadas reales independientes, que pueden variarse por separado:
 \begin{equation}
-  u_x = v_y, \qquad u_y = -v_x ,
-  \label{eq:cr}
+ z=x+iy,\quad x,y\in\mathbb R,\qquad
+ f(z)=f(x,y)=u(x,y)+iv(x,y).
+ \label{eq:real_complejo}
 \end{equation}
-y en ese caso $f'(z) = u_x + i\,v_x$ \cite{marsden1999,ahlfors1979}.
+Aquí $u=\operatorname{Re}f$ y $v=\operatorname{Im}f$ son funciones reales. Identificar $\mathbb C$ con $\mathbb R^2$ permite estudiar sus derivadas parciales. Sin embargo, una derivada compleja exige algo adicional: el cociente incremental debe tener el mismo límite al aproximarse desde cualquier dirección.
 
-Por \eqref{eq:cr}, la matriz jacobiana de $(x,y)\mapsto(u,v)$ es
+En particular, los incrementos reales $a$ y los imaginarios $ia$, con $a\in\mathbb R$, deben producir el mismo resultado. Evaluar ambas direcciones da
 \begin{equation}
-  J = \begin{pmatrix} u_x & -v_x \\ v_x & u_x \end{pmatrix}
-    = |f'(z)| \begin{pmatrix} \cos\theta & -\sin\theta \\ \sin\theta & \cos\theta \end{pmatrix},
-  \qquad \theta = \arg f'(z),
-  \label{eq:jacobiana}
+ \begin{aligned}
+ f'(z)&=\lim_{a\to0}\frac{f(x+a,y)-f(x,y)}a=u_x+iv_x,\\
+ f'(z)&=\lim_{a\to0}\frac{f(x,y+a)-f(x,y)}{ia}=v_y-iu_y.
+ \end{aligned}\label{eq:derivadas_direcciones}
 \end{equation}
-una rotación seguida de un escalamiento: todo vector tangente gira el mismo
-ángulo $\theta$ y se estira el mismo factor $|f'(z)|$, sin importar su
-dirección. Si $f'(z) \neq 0$, los ángulos entre curvas se conservan y $f$ es
-\emph{conforme}. La condición no se puede quitar: $f(z) = z^2$, con
-$f'(0) = 0$, duplica los ángulos en el origen.
-
-\subsection{Funciones armónicas y problema de Dirichlet}
-
-Una función $h$ es armónica si $\nabla^2 h = 0$. Derivando \eqref{eq:cr},
-$u_{xx} = v_{yx} = -u_{yy}$: las partes real e imaginaria de una función
-analítica son armónicas. Al revés, en una región simplemente conexa toda $h$
-armónica es la parte real de una función analítica $h + i\tilde h$, y
-$\tilde h$ es su \emph{conjugada armónica}, única salvo una constante
-\cite{ahlfors1979}. En particular, si $f' \neq 0$ existe una rama de
-$\log f'$ y
+Al igualar las partes real e imaginaria aparecen las ecuaciones de Cauchy--Riemann:
 \begin{equation}
-  \log f'(w) = \ln|f'(w)| + i\arg f'(w)
-  \quad\Longrightarrow\quad
-  \nabla^2 \ln|f'| = 0 .
-  \label{eq:lnfprima}
+ u_x=v_y,\qquad u_y=-v_x.
+ \label{eq:cr}
 \end{equation}
-Nótese que $|f'|$ todavía no es el factor de escala del mapa sobre la esfera, que
-incluye además la curvatura (sección~\ref{sec:paso4}).
-
-El \emph{problema de Dirichlet} pide $h$ armónica en una región acotada
-$\Omega$ con valores dados $h = g$ en $\partial\Omega$. Usaremos dos resultados:
-\begin{itemize}
-  \item \textbf{Principio del máximo.} Una función armónica no constante en
-    $\Omega$ alcanza su máximo y su mínimo solo en $\partial\Omega$. Si $s$ es
-    \emph{subarmónica} ($\nabla^2 s \geq 0$), al menos su máximo está en
-    $\partial\Omega$ \cite{marsden1999}.
-  \item \textbf{Existencia y unicidad.} Si la frontera es una curva de Jordan
-    (como el contorno de México continental), la solución existe; es única
-    porque la diferencia de dos soluciones es armónica, vale cero en
-    $\partial\Omega$ y, por el principio del máximo, es cero en todo $\Omega$
-    \cite{ahlfors1979}.
-\end{itemize}
-
-\subsection{Esfera de Riemann y proyección estereográfica}
-
-La esfera de Riemann identifica $\mathbb{C}\cup\{\infty\}$ con una esfera
-mediante la proyección estereográfica: un punto de latitud $\lat$ y longitud
-$\lon$ se proyecta desde el polo sur sobre el plano del ecuador, y por
-triángulos semejantes su distancia al centro es
+Para funciones $u,v$ de clase $C^1$, estas condiciones también son suficientes para la derivabilidad compleja \cite{marsden1999,ahlfors1979}. Su utilidad cartográfica se ve al sustituirlas en el diferencial:
 \begin{equation}
-  r(\lat) = \frac{R\cos\lat}{1+\sin\lat} = R\tan\!\left(\frac{\pi}{4}-\frac{\lat}{2}\right),
-  \qquad \zeta = r(\lat)\,e^{i\lon} .
-  \label{eq:estereo}
+ \begin{aligned}
+ df&=(u_x\,dx+u_y\,dy)+i(v_x\,dx+v_y\,dy)\\
+   &=(u_x+iv_x)(dx+i\,dy)=f'(z)\,dz.
+ \end{aligned}\label{eq:diferencial}
 \end{equation}
-Un desplazamiento hacia el norte mide $R\,d\lat$ en la esfera y
-$|dr| = R\,d\lat/(1+\sin\lat)$ en el plano; uno hacia el este mide
-$R\cos\lat\,d\lon$ en la esfera y $r\,d\lon = R\cos\lat\,d\lon/(1+\sin\lat)$
-en el plano. Las dos se reducen por el mismo factor, así que la proyección
-escala igual en todas direcciones: es conforme.
+Como $u,v$ son $C^1$, el error de esta aproximación lineal es $o(|dz|)$. Dividir $f(z+dz)-f(z)=f'(z)dz+o(|dz|)$ entre $dz$ demuestra que el límite es el mismo en cualquier dirección. Esto justifica también la suficiencia de Cauchy--Riemann.
 
-\subsection{Coordenada compleja sobre la esfera}
+Si $f'(z)=\rho e^{i\theta}\ne0$, donde $\rho=|f'(z)|>0$ y $\theta$ es su argumento, el mismo factor $\rho$ multiplica cualquier desplazamiento y la misma rotación $\theta$ actúa sobre todas las direcciones. Por tanto, los ángulos entre ellas se conservan. Esta es la conformidad que interesa al cliente. Excluir los ceros de $f'$ es necesario: $z^2$ duplica los ángulos entre rayos que salen del origen, donde su derivada es cero.
 
-En latitud y longitud, la métrica de la esfera es
-$ds^2 = R^2(d\lat^2 + \cos^2\lat\, d\lon^2)$. Para igualar los pesos de los
-dos términos se define la \emph{latitud isométrica}
+\subsection{De la ecuación de Laplace a la conjugada armónica}
+La construcción de una escala deseada requerirá recuperar una función analítica a partir de una sola función real. Para identificar qué funciones sirven, derivemos \eqref{eq:cr}. Las partes de una función analítica son suaves y sus derivadas mixtas coinciden:
 \begin{equation}
-  q(\lat) = \ln\tan\!\left(\frac{\pi}{4}+\frac{\lat}{2}\right),
-  \qquad \frac{dq}{d\lat} = \frac{1}{2\sin(\frac{\pi}{4}+\frac{\lat}{2})\cos(\frac{\pi}{4}+\frac{\lat}{2})}
-  = \frac{1}{\cos\lat} ,
-  \label{eq:qiso}
+ \begin{aligned}
+ u_{xx}+u_{yy}&=(v_y)_x-(v_x)_y=v_{yx}-v_{xy}=0,\\
+ v_{xx}+v_{yy}&=-(u_y)_x+(u_x)_y=-u_{yx}+u_{xy}=0.
+ \end{aligned}\label{eq:laplace}
 \end{equation}
-que lleva $(-\pi/2,\pi/2)$ a toda la recta real y cumple
-$\cos\lat = \operatorname{sech} q$. Con $d\lat = \cos\lat\,dq$ y la coordenada
-compleja $w = \lon + i\,q$ queda
+Una función real que satisface $\Delta u=u_{xx}+u_{yy}=0$ se llama armónica. El operador $\Delta$, o laplaciano, también se obtiene mediante dos operaciones de cálculo vectorial. El gradiente reúne las derivadas de una función y la divergencia suma las derivadas de las componentes de un campo:
 \begin{equation}
-  ds^2 = R^2\cos^2\lat\,(d\lon^2 + dq^2) = R^2\cos^2\lat\,|dw|^2 .
-  \label{eq:metrica}
+ \nabla u=(u_x,u_y),\qquad
+ \nabla\!\cdot(P,Q)=P_x+Q_y,\qquad
+ \nabla\!\cdot\nabla u=\partial_xu_x+\partial_yu_y=\Delta u.
+ \label{eq:divergencia}
 \end{equation}
-La métrica es \emph{conformemente plana}: un factor que depende del punto
-pero no de la dirección. Toda proyección es una función $z = x + iy = f(w)$, y
-si $f$ es analítica con $f'\neq 0$, entonces $|dz| = |f'(w)|\,|dw|$ y el
-factor de escala (longitud en el mapa entre longitud real) es
+Esta identidad permite reconocer la ecuación que resolverá el programa: buscar una función cuya divergencia del gradiente sea cero en el interior.
+
+Ahora supongamos que se conoce una armónica $h$ y se necesita una función $\widetilde h$ tal que $h+i\widetilde h$ sea analítica. Esa función se llama conjugada armónica de $h$. Cauchy--Riemann exige que sus derivadas sean
 \begin{equation}
-  \sigma(w) = \frac{|dz|}{ds} = \frac{|f'(w)|}{R\cos\lat},
-  \label{eq:sigma}
+ \widetilde h_x=-h_y,\qquad \widetilde h_y=h_x,
+ \qquad d\widetilde h=-h_y\,dx+h_x\,dy.
+ \label{eq:conjugada}
 \end{equation}
-igual en todas direcciones. El recíproco también vale
-\cite{ahlfors1979,milnor1969}, así que \emph{elegir una proyección conforme es
-lo mismo que elegir una función analítica $f$}.
+Conocemos así el gradiente que debería tener la conjugada, pero todavía debemos demostrar que integrarlo define una función.
 
-Un ejemplo: como $\tan(\pi/4-\lat/2) = e^{-q}$, la proyección estereográfica
-\eqref{eq:estereo} se escribe $\zeta = R\,e^{-q}e^{i\lon} = R\,e^{iw}$, que es
-analítica. La figura~\ref{fig:reticula} muestra dos proyecciones
-conformes de México.
+El teorema de Green (Anexo~\ref{an:green}) proporciona esa comprobación. Para una curva cerrada simple que encierra una región $A$ dentro del dominio,
+\begin{equation}
+ \begin{aligned}
+ \oint_{\partial A}(-h_y\,dx+h_x\,dy)
+ &=\iint_A\bigl[\partial_x(h_x)-\partial_y(-h_y)\bigr]dx\,dy\\
+ &=\iint_A(h_{xx}+h_{yy})\,dx\,dy=0.
+ \end{aligned}\label{eq:green}
+\end{equation}
+Si el dominio es simplemente conexo, los lazos no rodean agujeros ajenos a él y el resultado se extiende a los lazos cerrados por descomposición. Sean $\gamma_1,\gamma_2$ dos caminos desde $z_0$ hasta $z$. Recorrer el primero y regresar por el segundo forma un lazo, de modo que
+\begin{equation}
+ \int_{\gamma_1}(-h_y\,dx+h_x\,dy)
+ -\int_{\gamma_2}(-h_y\,dx+h_x\,dy)=0.
+ \label{eq:caminos}
+\end{equation}
+Este es el criterio de independencia de camino del Anexo~\ref{an:potencial}. Por ello se puede definir
+\begin{equation}
+ \widetilde h(z)=C+\int_{z_0}^{z}(-h_y\,dx+h_x\,dy).
+ \label{eq:potencial}
+\end{equation}
+El teorema fundamental de las integrales de línea asegura que sus derivadas cumplen \eqref{eq:conjugada}. Si existieran dos conjugadas, el gradiente de su diferencia sería cero. En un dominio conexo esa diferencia es constante. La conjugada es, por tanto, única salvo $C$ y queda completamente determinada al fijar su valor en $z_0$.
 
-\begin{figure}[ht]
-  \centering
-  \includegraphics[width=\linewidth]{fig1_reticula}
-  \caption{México y una retícula de meridianos y paralelos cada $4^\circ$ en
-    Mercator y en la Lambert de INEGI, con el origen en $(23.5^\circ$\,N,
-    $102^\circ$\,O$)$. Las dos son conformes: meridianos y paralelos se cruzan
-    siempre en ángulo recto, aunque en Lambert los meridianos converjan.
-    Fuente: elaboración propia con el contorno del INEGI.}
-  \label{fig:reticula}
+Para construir la proyección se aplicará lo anterior a $h=\ln|f'|$. Usaremos $\ln$ para el logaritmo natural real y $\operatorname{Ln}$ para una rama del logaritmo complejo. Si $f'$ no se anula en un dominio simplemente conexo, el teorema del logaritmo analítico (Anexo~\ref{an:log}) permite elegir un argumento continuo $\theta$. Su forma polar muestra explícitamente que
+\begin{equation}
+ \begin{aligned}
+ f'&=|f'|e^{i\theta},\qquad
+ \operatorname{Ln}f'=\ln|f'|+i\theta,\\
+ \operatorname{Re}(\operatorname{Ln}f')
+ &=\operatorname{Re}(\ln|f'|+i\theta)=\ln|f'|.
+ \end{aligned}\label{eq:log_armonico}
+\end{equation}
+La rama es analítica y su derivada es $f''/f'$. Como las partes reales de funciones analíticas son armónicas por \eqref{eq:laplace}, $h$ satisface la ecuación de Laplace. Esta es la conexión que permitirá diseñar la escala mediante un problema de frontera. El problema de Dirichlet prescribe $\Delta h=0$ en $\Omega$ y $h=g$ en $\partial\Omega$. Para nuestro dominio de Jordan y datos continuos tiene solución única. El principio del máximo (Anexo~\ref{an:maximo}) demostrará esa unicidad y la optimalidad de la escala elegida.
+
+\subsection{De la esfera a un plano: la proyección estereográfica}
+Antes de elegir una escala necesitamos una coordenada que describa puntos de la esfera. La esfera de Riemann representa $\mathbb C\cup\{\infty\}$ mediante proyección estereográfica. Aquí tomamos una esfera de radio $R$, centro $O$ y polo sur $S$. La recta desde $S$ hasta un punto $P$ de la superficie corta el plano ecuatorial en $Q$ (Figura~\ref{fig:reticula}). La distancia $r=OQ$ será el radio del punto proyectado.
+
+Sea $A$ la proyección de $P$ sobre el eje polar. La latitud da la altura $OA=R\sin\varphi$ y la distancia al eje $AP=R\cos\varphi$. Los triángulos rectángulos $SOQ$ y $SAP$ comparten el ángulo en $S$, pues $S,Q,P$ están alineados. Por semejanza,
+\begin{equation}
+ \frac{OQ}{SO}=\frac{AP}{SA},\qquad
+ \frac rR=\frac{R\cos\varphi}{R+R\sin\varphi},\qquad
+ r=\frac{R\cos\varphi}{1+\sin\varphi}
+   =R\tan(\pi/4-\varphi/2).
+ \label{eq:estereo}
+\end{equation}
+La última igualdad es la identidad de medio ángulo. La proyección conserva la dirección longitudinal, así que sus coordenadas planas son $r\cos\lambda,r\sin\lambda$. Reunirlas en un complejo define $\zeta=r e^{i\lambda}$.
+
+Para comprobar la conformidad se comparan desplazamientos perpendiculares. Sobre un meridiano el arco mide $R|d\varphi|$, mientras que su imagen mide $|r'|\,|d\varphi|$. Sobre un paralelo, de radio $R\cos\varphi$, las longitudes correspondientes son $R\cos\varphi|d\lambda|$ y $r|d\lambda|$. Derivando \eqref{eq:estereo},
+\begin{equation}
+ r'=-R\frac{\sin\varphi(1+\sin\varphi)+\cos^2\varphi}{(1+\sin\varphi)^2}
+ =-\frac{R}{1+\sin\varphi},\quad
+ \frac{|r'|}{R}=\frac r{R\cos\varphi}=\frac1{1+\sin\varphi}.
+ \label{eq:estereo_escala}
+\end{equation}
+Las direcciones permanecen ortogonales en coordenadas polares y tienen la misma escala. Esto demuestra la conformidad estereográfica.
+
+\begin{figure}[htbp]\centering
+\includegraphics[width=\linewidth,clip]{fig1_geometria_reticula.png}
+\caption{Arriba: construcción estereográfica y corte por $O,S,P$, con los triángulos $SOQ$ y $SAP$ y las longitudes de \eqref{eq:estereo}. Abajo: retícula mexicana bajo Mercator y Lambert. Fuente: geometría calculada para este documento y retícula del repositorio con datos de INEGI.}\label{fig:reticula}
 \end{figure}
+
+\subsection{De la longitud sobre la esfera al factor de escala}
+La estereográfica proporciona un primer mapa. Para describir cualquier proyección conforme hay que conocer primero cómo se mide un desplazamiento en la superficie. La posición tridimensional de un punto de latitud $\varphi$ y longitud $\lambda$ es
+\begin{equation}
+ \mathbf p(\varphi,\lambda)=R(\cos\varphi\cos\lambda,\cos\varphi\sin\lambda,\sin\varphi).
+ \label{eq:parametrizacion}
+\end{equation}
+Al variar ambos ángulos, $d\mathbf p=\mathbf p_\varphi\,d\varphi+\mathbf p_\lambda\,d\lambda$. Las derivadas que describen esas direcciones tangentes son
+\begin{equation}
+ \begin{aligned}
+ \mathbf p_\varphi&=R(-\sin\varphi\cos\lambda,-\sin\varphi\sin\lambda,\cos\varphi),\\
+ \mathbf p_\lambda&=R(-\cos\varphi\sin\lambda,\cos\varphi\cos\lambda,0),\\
+ \|\mathbf p_\varphi\|^2&=R^2,\quad
+ \|\mathbf p_\lambda\|^2=R^2\cos^2\varphi,\quad
+ \mathbf p_\varphi\cdot\mathbf p_\lambda=0.
+ \end{aligned}\label{eq:tangentes}
+\end{equation}
+Definimos $ds$ como la longitud infinitesimal recorrida sobre la superficie, no como otra coordenada. Al expandir $ds^2=\|d\mathbf p\|^2$, el término mixto desaparece por la ortogonalidad anterior:
+\begin{equation}
+ ds^2=\|\mathbf p_\varphi\|^2d\varphi^2
+ +2\mathbf p_\varphi\cdot\mathbf p_\lambda\,d\varphi\,d\lambda
+ +\|\mathbf p_\lambda\|^2d\lambda^2
+ =R^2(d\varphi^2+\cos^2\varphi\,d\lambda^2).
+ \label{eq:metrica}
+\end{equation}
+Para $-\pi/2<\varphi<\pi/2$, los coeficientes distintos impiden tratar $\lambda+i\varphi$ como una coordenada plana isotrópica. Buscamos entonces una nueva latitud $q$ que iguale ambos pesos. Sacar $R^2\cos^2\varphi$ como factor exige $dq=d\varphi/\cos\varphi$. Elegimos la primitiva nula en el ecuador:
+\begin{equation}
+ q(\varphi)=\ln\tan(\pi/4+\varphi/2),\qquad
+ q'(\varphi)=\frac1{2\sin(\pi/4+\varphi/2)\cos(\pi/4+\varphi/2)}=\sec\varphi.
+ \label{eq:q}
+\end{equation}
+Ahora se define la entrada cartográfica $w=\lambda+iq$. Esta elección, y no una sustitución arbitraria, da $|dw|^2=d\lambda^2+dq^2$. La métrica toma la forma
+\begin{equation}
+ ds^2=R^2\cos^2\varphi\,(dq^2+d\lambda^2)
+ =R^2\cos^2\varphi\,|dw|^2.
+ \label{eq:metrica_conforme}
+\end{equation}
+En adelante $f(w)$ es el punto del mapa, cuyas componentes se llaman $x,y$ en las fórmulas de conversión. Si $f$ es analítica con $f'\ne0$, \eqref{eq:diferencial} implica $|df|=|f'(w)|\,|dw|$. Dividir la longitud del mapa entre la longitud terrestre define la escala local:
+\begin{equation}
+ \sigma(w)=\frac{|df|}{ds}
+ =\frac{|f'(w)|\,|dw|}{R\cos\varphi\,|dw|}
+ =\frac{|f'(w)|}{R\cos\varphi}.
+ \label{eq:sigma}
+\end{equation}
+El numerador describe la transformación entre planos y el denominador incorpora la superficie terrestre. Esta separación permite comparar Mercator y Lambert y, después, buscar la función $f$ que controle mejor la variación de $\sigma$.

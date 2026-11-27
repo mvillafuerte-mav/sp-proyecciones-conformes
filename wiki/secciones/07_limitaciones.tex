@@ -1,56 +1,6 @@
-% Responsable: Persona 4. ~200 palabras.
 \section{Limitaciones y alcance de validez}
-\label{sec:limitaciones}
+La esfera no equivale al elipsoide GRS80. En 19990 pares, haversine difiere de la geodésica elipsoidal entre $-0.19\,\%$ y $+0.49\,\%$. Frente a esta última, EPSG:6372 obtiene mediana $0.29\,\%$ y máximo $0.72\,\%$, mientras que la óptima de envolvente obtiene $0.15\,\%$ y $0.68\,\%$. Mejorar la proyección esférica no elimina el error del modelo terrestre.
 
-\subsection{Modelo esférico frente al elipsoide}
-Todo el análisis usa la esfera, cuya distancia difiere de la geodésica sobre
-el elipsoide GRS80 hasta en $0.49\,\%$ (sección~\ref{sec:proj}), más que el
-error de la proyección óptima. Medido contra la geodésica real, el error
-típico (mediana) es de $0.29\,\%$ con EPSG:6372 y de $0.15\,\%$ con la óptima
-sobre la envolvente, pero el máximo es parecido: $0.72\,\%$ y $0.68\,\%$
-(tabla~\ref{tab:elipsoide}). Para
-tener la cota de $0.2\,\%$ en la realidad hay que resolver el mismo problema
-sobre el elipsoide, cambiando $q$ por la latitud isométrica del elipsoide y
-$R\cos\lat$ por el radio del paralelo \cite{snyder1987}; el método no cambia.
+La cota local controla longitudes de curvas contenidas en el dominio. La distancia euclidiana entre extremos es una cuerda de la curva proyectada: trasladar automáticamente ambas cotas locales a esa distancia requiere condiciones adicionales sobre caminos e imagen. Una envolvente convexa en latitud/longitud no demuestra esas condiciones. Por eso se reportan máximos observados y se evita prometer $0.2\,\%$ para cualquier par. Para precisión estricta se calculan geodésicas elipsoidales. Para áreas, se usa una proyección equivalente, como Albers, o áreas geodésicas \cite{snyder1987}.
 
-\begin{table}[ht]
-  \centering
-  \footnotesize
-  \input{tablas/tabla_elipsoide}
-  \caption{Error en distancias contra la geodésica sobre el elipsoide GRS80,
-    en los mismos pares de cabeceras del Paso~5, y distancia a partir de la
-    cual el error de la proyección supera un error de posición de 50~m
-    (umbral $= 50~\text{m}/\text{error}$, con el error típico y con el
-    máximo). Fuente: elaboración propia con datos del INEGI.}
-  \label{tab:elipsoide}
-\end{table}
-
-\subsection{Ángulos sí, áreas no}
-Una proyección conforme multiplica las áreas por $\sigma^2$: con Lambert el
-efecto llega a $1.5\,\%$, con la óptima sobre México a $0.2\,\%$ y con la de la
-envolvente a $0.4\,\%$. Para conteos por área o
-mapas de densidad que deban ser exactos conviene una proyección equivalente,
-como la cónica equivalente de Albers \cite{snyder1987}, o calcular
-directamente sobre la esfera (por ejemplo, con un BallTree con métrica
-haversine).
-
-\subsection{La cota solo vale dentro de la región}
-La garantía de Chebyshev se refiere a $\region$. Para distancias cuyo recorrido
-sale de la región, como las que cruzan el Golfo de California, la óptima
-sobre México puede ser peor que Lambert ($1.8\,\%$ contra $0.6\,\%$). La región
-debe elegirse según los análisis: la envolvente convexa incluye los dos golfos
-y, a cambio de duplicar $\delta$, mantuvo el error por debajo de $0.2\,\%$ en
-todos los pares de la muestra.
-
-\subsection{Límites teóricos}
-El teorema de Riemann garantiza que existe un mapeo conforme entre dos
-regiones simplemente conexas distintas del plano completo, pero no da una
-fórmula \cite{ahlfors1979}; por eso la
-proyección óptima se obtuvo numéricamente. Además, el método es propio del
-plano: por el teorema de Liouville, en dimensión 3 o mayor los únicos mapeos
-conformes son las transformaciones de Möbius \cite{blair2000}.
-
-\subsection{Costo práctico}
-Una proyección a la medida no viene en PROJ ni en los sistemas de información
-geográfica comunes: el cliente depende del script del repositorio y sus
-coordenadas no se pueden mezclar con las de sistemas que usan EPSG:6372.
+Riemann garantiza equivalencias conformes de dominios planos propios simplemente conexos, pero no proporciona fórmulas ni asegura que toda primitiva con derivada no nula sea globalmente inyectiva \cite{ahlfors1979}. La libertad de elegir una función analítica es propia del problema bidimensional: el teorema de Liouville restringe los mapeos conformes en dimensión tres o mayor a transformaciones de Möbius \cite{blair2000}. Una proyección propia exige mantener modelos, dominio y convenciones fuera del catálogo estándar.

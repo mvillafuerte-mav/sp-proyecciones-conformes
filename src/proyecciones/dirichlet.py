@@ -163,7 +163,9 @@ class ProyeccionOptima:
     def __init__(self, lat_contorno, lon_contorno, h=0.001, R=R_M):
         t0 = time.perf_counter()
         self.R = R
+        self.paso = h
         wc = w_de(lat_contorno, lon_contorno)
+        self.contorno = wc
         self.malla = m = Malla(wc, h)
         self.w = m.w
         self.h = m.resolver(ln_cos_lat)
@@ -246,7 +248,8 @@ class ProyeccionOptima:
         i = self._nodos
         np.savez_compressed(ruta, w=self.w[i], f=self.f[i], fp=self.fp[i],
                             gprima=self.gprima[i], h=self.h[i], c=self.c,
-                            delta=self.delta, R=self.R, paso=self.malla.h)
+                            delta=self.delta, R=self.R, paso=self.paso,
+                            contorno=self.contorno)
 
     @classmethod
     def cargar(cls, ruta):
@@ -254,10 +257,21 @@ class ProyeccionOptima:
         p = cls.__new__(cls)
         p.w, p.f, p.fp, p.gprima, p.h = d["w"], d["f"], d["fp"], d["gprima"], d["h"]
         p.c, p.delta, p.R, p.paso = float(d["c"]), float(d["delta"]), float(d["R"]), float(d["paso"])
+        p.contorno = d["contorno"] if "contorno" in d else None
         p.conectados = np.ones(len(p.w), dtype=bool)
         p._nodos = np.arange(len(p.w))
         p._arbol = cKDTree(np.column_stack([p.w.real, p.w.imag]))
         return p
+
+    def contiene(self, lat, lon):
+        """Pertenencia al polígono de ajuste, incluyendo su frontera."""
+        from shapely import intersects_xy
+        from shapely.geometry import Polygon
+        if self.contorno is None:
+            raise ValueError("El modelo antiguo no contiene su dominio; regenérelo.")
+        w = np.atleast_1d(w_de(lat, lon))
+        pol = Polygon(np.column_stack([self.contorno.real, self.contorno.imag]))
+        return intersects_xy(pol, w.real, w.imag)
 
     def distancia_a_malla(self, lat, lon):
         """Distancia (en unidades de w) al nodo más cercano; sirve para avisar
@@ -283,14 +297,15 @@ class ProyeccionOptima:
         norte hacia arriba en ese punto.
 
         Para puntos fuera de Ω (islas, o costa recortada por la
-        simplificación) el valor se extrapola desde el nodo más cercano; sigue
-        siendo conforme ahí cerca, pero la cota de escala δ solo vale en Ω.
+        simplificación) el valor se extrapola desde el nodo más cercano.
+        La reconstrucción es aproximada y puede tener saltos milimétricos entre
+        celdas. La cota del problema continuo no certifica esas interfaces.
         """
         w = np.atleast_1d(w_de(lat, lon))
         i = self._nodo_cercano(w)
         dw = w - self.w[i]
         gp = self.gprima[i]
-        # Taylor de f alrededor del nodo: f + f' dw + f'' dw²/2 + f''' dw³/6
+        # Aproximación local con g' constante; no es el Taylor cúbico exacto.
         z = self.f[i] + self.fp[i] * (dw + gp * dw**2 / 2 + gp**2 * dw**3 / 6)
         return z.real, z.imag
 
@@ -371,27 +386,30 @@ def contorno_envolvente(lat_c, lon_c, m=2000):
     return z.imag, z.real
 
 
-_DEFAULT = None
-_ENVOLVENTE = None
+_MODELOS = {}
+
+
+def obtener_modelo(nombre="optima"):
+    """Una única carga de los modelos persistentes para conversión y análisis."""
+    from pathlib import Path
+    archivos = {"optima": "optima_mexico.npz", "optima_envolvente": "optima_envolvente.npz"}
+    if nombre not in archivos:
+        raise ValueError(f"Modelo desconocido: {nombre}")
+    if nombre not in _MODELOS:
+        ruta = Path(__file__).resolve().parents[2] / "resultados/modelos" / archivos[nombre]
+        _MODELOS[nombre] = ProyeccionOptima.cargar(ruta)
+    return _MODELOS[nombre]
 
 
 def proyectar_optima(lat, lon):
     """(lat, lon) -> (x, y) con la proyección óptima para México continental."""
-    global _DEFAULT
-    if _DEFAULT is None:
-        from .datos import cargar_contorno
-        _DEFAULT = ProyeccionOptima(*cargar_contorno())
-    return _DEFAULT.proyectar(lat, lon)
+    return obtener_modelo("optima").proyectar(lat, lon)
 
 
 def proyectar_optima_envolvente(lat, lon):
-    """Igual, pero óptima sobre la envolvente convexa de México. Su cota de
-    escala vale también para distancias que cruzan los golfos."""
-    global _ENVOLVENTE
-    if _ENVOLVENTE is None:
-        from .datos import cargar_contorno
-        _ENVOLVENTE = ProyeccionOptima(*contorno_envolvente(*cargar_contorno()))
-    return _ENVOLVENTE.proyectar(lat, lon)
+    """Óptima sobre la envolvente convexa de México. La cota es de escala
+    local sobre la esfera; las distancias entre pares se verifican aparte."""
+    return obtener_modelo("optima_envolvente").proyectar(lat, lon)
 
 
 if __name__ == "__main__":

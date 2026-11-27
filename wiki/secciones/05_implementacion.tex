@@ -1,45 +1,6 @@
-% Responsables: Persona 2 y Persona 4. ~200 palabras.
 \section{Implementación y verificación}
+El contorno simplificado tiene 2061 vértices. Se resuelve $\Delta(h-\ln R)=0$ con borde $\ln\cos\varphi$, mediante diferencias finitas y Shortley--Weller junto a la frontera \cite{shortley1938}. Se usa $\Delta w=0.001$, con 58312 nodos. Las aristas proporcionan incrementos de conjugada y mapa, conciliados por mínimos cuadrados. Un ajuste polinomial previo dejó residuos cercanos a $9\times10^{-4}$, por lo que no se eligió para esta geometría \cite{brubeck2021}.
 
-\subsection{Método numérico para el problema de Dirichlet}
-\label{sec:metodo}
+Con la solución conocida $h=\ln|w-w_*|$, singularidad exterior, los errores máximos son $1.46\times10^{-4}$, $3.74\times10^{-5}$, $9.74\times10^{-6}$ y $2.49\times10^{-6}$ con pasos $0.004$, $0.002$, $0.001$ y $0.0005$: convergencia aproximadamente cuadrática. Las mallas $0.002$, $0.001$ y $0.0005$ dan $\delta=0.00184343$, $0.00184347$ y $0.00184298$. En cabeceras, la prueba a 1 km conserva el ángulo recto a $0.003^\circ$. En los vértices de frontera, la oscilación interpolada de $\ln\sigma$ es $1.11\times10^{-4}$ y la desviación máxima respecto a $c$ es $7.52\times10^{-5}$. Estos residuos reflejan la reconstrucción discreta. La evaluación local puede tener saltos entre celdas de unos 6 mm: se documentan como error numérico, no como propiedad conforme exacta.
 
-Se usaron diferencias finitas de cinco puntos en una malla cuadrada del plano
-$w$. Junto a la frontera, el vecino que cae fuera de $\region$ se sustituye por
-el punto donde la línea de la malla corta el contorno, con su distancia real
-(Shortley--Weller \cite{shortley1938}), lo que mantiene el error en $O(h^2)$.
-El sistema es ralo y se resuelve por LU con SciPy.
-
-Para verificar el método se impuso en $\frontera$ una función armónica
-conocida, $\ln|w - w_*|$, con $w_*$ en el Pacífico frente a Baja California.
-El error máximo en los nodos fue $1.5\times10^{-4}$, $3.7\times10^{-5}$,
-$9.7\times10^{-6}$ y $2.5\times10^{-6}$ con pasos $h = 0.004$, $0.002$,
-$0.001$ y $0.0005$: baja a la cuarta parte cada vez que $h$ se divide entre
-dos, como corresponde a $O(h^2)$. Para el mapa completo, en cada cabecera se
-proyectaron puntos a 1~km al norte y al este: la escala medida coincide con
-la teórica a $2.2\times10^{-5}$ y el ángulo recto se conserva a $0.003^\circ$.
-
-Antes se probó escribir $h$ como parte real de un polinomio complejo ajustado
-en la frontera \cite{brubeck2021}, pero para México el residuo se estanca en
-$9\times10^{-4}$ (grados 40 a 160), del orden de $\delta^*$: el Golfo de
-California es un canal angosto fuera de $\region$ y ahí los polinomios
-convergen demasiado lento.
-
-\subsection{Verificación con PROJ}
-\label{sec:proj}
-
-Nuestras Mercator y Lambert coinciden con las de PROJ~9.8 \cite{proj} en su
-versión esférica ($R = 6\,371\,008.8$~m) a menos de $10^{-8}$~m en las 2476
-cabeceras, y su factor de escala, a $10^{-10}$.
-
-Los parámetros de la Lambert de INEGI se tomaron del registro EPSG
-\cite{epsg}: paralelos estándar $17.5^\circ$ y $29.5^\circ$, origen en
-$12^\circ$\,N y $102^\circ$\,O, y falso este de 2\,500\,000~m. En ese registro
-la proyección es EPSG:6372 (\emph{Mexico ITRF2008 / LCC}); el código
-EPSG:6361 que suele citarse no aparece como sistema de coordenadas.
-
-Frente a EPSG:6372 sobre el elipsoide GRS80 que usa INEGI, las coordenadas
-cambian hasta 9.6~km, pero la distorsión casi no ($\delta = 0.01312$ contra
-$0.01319$). Lo que sí cambia es la referencia: en 19\,990 pares de cabeceras,
-la distancia haversine difiere de la geodésica sobre GRS80 entre $-0.19\,\%$ y
-$+0.49\,\%$.
+Mercator y Lambert esféricas coinciden con PROJ a menos de $10^{-8}$ m \cite{proj}. Los parámetros corresponden a EPSG:6372, \emph{Mexico ITRF2008 / LCC}, no a EPSG:6361, ausente como CRS en la base consultada \cite{epsg}. El código conserva funciones puras para fórmulas y clases para malla y modelo persistente. La carga común evita resolver de nuevo durante cada análisis.

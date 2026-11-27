@@ -1,45 +1,6 @@
-% Responsable: Persona 4. ~200 palabras.
 \section{Conclusiones y recomendaciones al cliente}
+El análisis complejo aporta una construcción: pasa de la métrica esférica a una función analítica, identifica $\ln|f'|$ como potencial armónico y determina su frontera mediante Dirichlet. La comparación demuestra cuánto se gana frente al catálogo: la oscilación de escala baja siete veces respecto a Lambert y 76 respecto a Mercator. Proyectar permite conservar algoritmos planos, aunque no reemplaza toda operación geodésica.
 
-\subsection{Respuesta a las preguntas de la consultoría}
+El beneficio termina donde cambian las condiciones del modelo: áreas, recorridos fuera del dominio, exigencia subporcentual frente al elipsoide o distancias comparables con los saltos numéricos. En esos casos se requieren proyecciones equivalentes, una región ampliada o cálculo geodésico directo.
 
-\textbf{¿Cómo ayuda el análisis complejo?} Convierte una pregunta de geometría
-y datos en un problema bien planteado. Con la coordenada $w$, toda proyección
-conforme es una función analítica, el logaritmo de su escala es armónico y la
-mejor proyección es la solución de un problema de Dirichlet, que existe, es
-única y se calcula en menos de un segundo. Además da una cota: sobre la
-esfera, ninguna proyección conforme de México tiene $\delta$ menor que
-$0.00184$, así que se sabe cuánto le falta a cada opción.
-
-\textbf{¿Qué se gana frente a una proyección de catálogo o la fuerza bruta?}
-Frente a Mercator la distorsión baja 76 veces, y frente a Lambert 7 veces; en
-distancias reales, el error típico queda en la mitad del de Lambert. Frente a
-calcular la geodésica de cada par, proyectar una vez conserva los algoritmos
-rápidos del plano (árboles k-d, k-means) con un error acotado y conocido.
-
-\textbf{¿Cuáles son los límites?} La garantía vale dentro de la región elegida
-y sobre la esfera: fuera de la región el error puede llegar a $1.8\,\%$, y
-contra el elipsoide, a $0.7\,\%$. Las áreas cambian por $\sigma^2$ y una proyección a la medida
-no está en el software estándar. Para densidades exactas conviene una
-proyección equivalente, y para distancias exactas, calcular sobre el
-elipsoide (sección~\ref{sec:limitaciones}).
-
-\subsection{Recomendación}
-\label{sec:recomendacion}
-
-Si los datos tienen un error de posición de unos 50~m, el error de cada
-proyección empieza a dominar a partir de cierta distancia
-(tabla~\ref{tab:elipsoide}):
-\begin{enumerate}
-  \item \textbf{Dejar Mercator} para cualquier análisis de distancias: su
-    error supera los 50~m desde 0.8~km (0.3~km en el peor caso).
-  \item \textbf{Usar EPSG:6372 como proyección de trabajo.} Es la oficial, está
-    en todo sistema de información geográfica y su error supera los 50~m solo
-    a partir de 17~km (7~km en el peor caso). Para agrupamientos y vecinos
-    locales es despreciable.
-  \item \textbf{Usar la óptima sobre la envolvente} (sección~\ref{sec:herramienta})
-    cuando importe el error típico en distancias largas, como en rutas: el
-    umbral típico sube a 33~km, aunque en el peor caso sigue en 7~km.
-  \item Si se necesita una cota de $0.2\,\%$ para cualquier par, el siguiente
-    paso es resolver el mismo problema sobre el elipsoide.
-\end{enumerate}
+Se recomienda EPSG:6372 como sistema de trabajo interoperable. Con un presupuesto ilustrativo de error de 50 m, su error mediano muestral equivale a esa magnitud cerca de 17 km, y su máximo observado cerca de 7 km. La envolvente desplaza el primer umbral a 33 km, pero no mejora sustancialmente el segundo. Estos umbrales son orientativos, no fronteras universales. Mantener la óptima se justifica si esa reducción típica compensa su costo y el cliente valida sus propios datos.

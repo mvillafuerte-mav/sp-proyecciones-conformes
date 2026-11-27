@@ -26,3 +26,6 @@ data/processed/*
 # Sistema
 .DS_Store
 *.zip
+
+# Respaldos, revisiones y registros de trabajo locales
+.project/

@@ -1,15 +1,3 @@
-% Responsable: Persona 4. ~150 palabras. Se escribe al final con los números de la tabla.
 \begin{abstract}
-Para analizar distancias en México, Mercator no sirve: infla las distancias
-entre un $5\,\%$ en el sur y un $12\,\%$ en el norte (hasta $18\,\%$), y esa
-diferencia entre regiones no se corrige con ninguna escala constante. La
-Cónica Conforme de Lambert de INEGI distorsiona 10 veces menos
-($\delta = 0.0132$, error máximo de escala de $0.66\,\%$). La proyección
-conforme óptima, que se obtiene resolviendo un problema de Dirichlet sobre el
-contorno del país, la mejora otras 7 veces ($\delta = 0.00184$, $0.09\,\%$).
-Medidas contra las distancias reales sobre el elipsoide, la Lambert oficial
-(EPSG:6372) tiene un error típico de $0.29\,\%$ y la óptima (resuelta sobre la
-envolvente convexa del país) de $0.15\,\%$, con máximos cercanos a $0.7\,\%$ en
-ambas porque la óptima se calculó sobre la esfera. Recomendamos cambiar de inmediato a EPSG:6372 y usar la proyección
-óptima cuando importe el error típico en distancias largas.
+Una empresa de analítica geoespacial utiliza Mercator para comparar ubicaciones mexicanas y sospecha que sus distancias se inflan más en el norte. Este trabajo determina cuánto cambia ese error y si una proyección conforme ajustada al territorio mejora la alternativa de Lambert. Para ello se representa la esfera mediante una coordenada compleja, se deriva la escala de ambas proyecciones y se construye la óptima de Chebyshev resolviendo la ecuación de Laplace con valores fijados en la frontera (problema de Dirichlet). La evaluación usa 2476 cabeceras continentales de INEGI. Sobre la esfera, Mercator, Lambert y la óptima tienen distorsiones $\delta=0.14025$, $0.01319$ y $0.00184$, con errores medianos nacionales entre pares de $6.07\,\%$, $0.28\,\%$ y $0.04\,\%$. La óptima reduce siete veces la oscilación de escala de Lambert, pero pierde ventaja en recorridos fuera del dominio y frente al elipsoide. Se recomienda EPSG:6372 como sistema interoperable y la óptima solo cuando su beneficio medido justifique mantener una transformación propia.
 \end{abstract}

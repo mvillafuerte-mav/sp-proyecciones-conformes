@@ -98,11 +98,27 @@ modelos ya ajustados de `resultados/modelos/`.
 ```bash
 cd src
 python -m proyecciones.conversion                               # ejemplo con 3 ciudades
-python -m proyecciones.conversion clientes.csv clientes_xy.csv   # CSV con columnas lat, lon (EPSG:6372)
+python -m proyecciones.conversion clientes.csv clientes_xy.csv   # CSV con columnas lat, lon geográficas (EPSG:4326)
 python -m proyecciones.conversion clientes.csv salida.csv --proyeccion optima_envolvente
 ```
 
 Desde Python: `from proyecciones.conversion import latlon_a_xy`.
+
+La entrada geográfica se interpreta en EPSG:4326. Se rechazan infinitos,
+latitudes fuera de (-90, 90), longitudes fuera de [-180, 180] y la escritura
+del CSV sobre su propio archivo de entrada. Las filas incompletas quedan vacías.
+Los modelos NPZ incluyen el polígono de ajuste para avisar sobre extrapolación.
+La cota teórica es de escala local sobre la esfera: las distancias entre pares
+se verifican aparte. La evaluación de la óptima tiene saltos de hasta unos
+6 mm en interfaces de celdas y no debe tratarse como exactamente conforme
+a escala milimétrica.
+
+En Windows, desde la raíz, ejecutar pruebas con
+`.\.venv\Scripts\python.exe -m pytest -q`.
+Para ejecutar módulos, entrar en `src` y usar
+`..\.venv\Scripts\python.exe -m proyecciones.conversion`.
+La revisión se realizó con Python 3.12.10; las versiones de las bibliotecas
+quedaron registradas en `requirements-lock.txt`.
 
 ## Compilar la wiki
 
@@ -111,8 +127,13 @@ Con Overleaf: subir la carpeta `wiki/` (o conectar el repo) y compilar `main.tex
 En local:
 ```bash
 cd wiki
-latexmk -pdf main.tex
+latexmk -xelatex main.tex
 ```
+
+El documento usa Times New Roman y requiere XeLaTeX (por ejemplo,
+`latexmk -xelatex main.tex`) o `tectonic main.tex`. La portada y el logo
+proceden de la plantilla aportada, conservada en `wiki/recursos/`.
+Los cuatro campos de integrantes se editan en `wiki/datos_portada.tex`.
 
 ## Convenciones
 
@@ -123,4 +144,16 @@ latexmk -pdf main.tex
   σ factor de escala, Ω región de México, δ(Ω) distorsión.
 - Máximo 3 figuras, con pie y fuente.
 - Referencias IEEE: si usas una fuente, agrégala a `referencias.bib` con DOI o enlace.
-- Extensión: 2000–3000 palabras sin ecuaciones, código ni referencias.
+- Extensión actualizada: hasta 4000 palabras sin ecuaciones, código ni referencias.
+
+## Wiki revisada
+
+El PDF compilado está en [wiki/main.pdf](wiki/main.pdf). La fuente principal
+es [wiki/main.tex](wiki/main.tex) y los integrantes se completan en
+[wiki/datos_portada.tex](wiki/datos_portada.tex). El límite actualizado es de
+4000 palabras. Los teoremas auxiliares están en el anexo.
+
+La Figura 1 combina la construcción estereográfica con las retículas. Para
+regenerarla, instalar opcionalmente PyMuPDF (`python -m pip install pymupdf`)
+y ejecutar `python scripts/generar_geometria.py` desde la raíz. El script
+usa la retícula existente de `wiki/figuras/fig1_reticula.pdf`.

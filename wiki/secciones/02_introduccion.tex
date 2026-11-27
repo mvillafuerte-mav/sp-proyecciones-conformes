@@ -1,55 +1,10 @@
-% Responsable: Persona 4. ~300 palabras.
 \section{Introducción y contexto del problema}
+El caso de estudio plantea una empresa de analítica geoespacial que procesa millones de ubicaciones de comercios, clientes y sensores distribuidos por México. Sus análisis necesitan decidir qué puntos están cerca, cuáles forman un grupo y cómo varía una medición en el territorio. Actualmente utiliza Mercator, la proyección habitual de los mapas web, pero sus analistas sospechan que distancias comparables aparecen más grandes en el norte que en el sur. El problema del cliente es determinar si esa diferencia afecta sus decisiones y qué transformación conviene usar.
 
-\subsection{Por qué los datos geoespaciales necesitan coordenadas planas}
+La dificultad comienza con las coordenadas originales. La latitud $\varphi$ mide el ángulo respecto al ecuador y la longitud $\lambda$ indica la posición angular alrededor del eje terrestre. Son ángulos, no longitudes: un grado de longitud mide $R\cos\varphi\,\pi/180$, aproximadamente 111 km en el ecuador y 97 km a $29^\circ$ N. Por ello, calcular directamente distancias euclidianas entre pares de latitud y longitud asigna el mismo peso a desplazamientos que físicamente son distintos.
 
-La latitud $\lat$ y la longitud $\lon$ son ángulos, no distancias. Un grado de
-latitud mide siempre unos 111.2~km, pero uno de longitud mide
-$R\cos\lat\,\pi/180$: 111.2~km en el ecuador y 97.3~km a $29^\circ$\,N, en
-Sonora. Los algoritmos del cliente (k-means, búsqueda de vecinos cercanos con
-árboles k-d, interpolación espacial por IDW o kriging, mapas de calor por
-densidad de núcleo y optimización de rutas) suponen distancias euclidianas.
-Con millones de registros lo práctico es proyectar una sola vez a $(x, y)$ y
-trabajar en el plano, en lugar de calcular la distancia sobre la esfera para
-cada par. La pregunta es cuánto error mete ese paso.
+Convertir esas ubicaciones a un plano permite utilizar k-means, árboles k-d para vecinos cercanos, interpolación IDW y kriging, y estimación de densidad por núcleos. También facilita operaciones geométricas en rutas, aunque una ruta vial necesita además la red de caminos. La ventaja computacional de proyectar una vez plantea entonces una condición: conocer y controlar la deformación que se introduce.
 
-\subsection{Por qué no existe un mapa perfecto}
+No es posible eliminarla por completo. El resultado de Euler sobre la imposibilidad de un mapa exacto y el Teorema Egregium de Gauss explican que ninguna proyección conserva todas las distancias: una isometría (transformación que conserva longitudes) conserva la curvatura gaussiana, mientras que la esfera tiene $1/R^2$ y el plano, cero \cite{snyder1987,docarmo1976}. Se estudian proyecciones conformes porque conservan ángulos y multiplican todas las direcciones por el mismo factor local $\sigma$. Esta propiedad protege las formas pequeñas y permite describir su deformación mediante una sola cantidad.
 
-En el siglo XVIII Euler demostró que ningún mapa plano conserva todas las
-distancias de la esfera \cite{snyder1987}. La razón de fondo es el Teorema
-Egregium de Gauss:
-la curvatura gaussiana no cambia bajo isometrías, y la de la esfera es $1/R^2$
-mientras que la del plano es 0 \cite{docarmo1976}. Toda proyección renuncia a
-algo: las conformes conservan los ángulos, las equivalentes conservan las
-áreas y las equidistantes conservan las distancias solo en ciertas
-direcciones.
-
-\subsection{Qué significa que una proyección sea conforme}
-
-Una proyección es conforme si conserva los ángulos o, lo que es lo mismo, si
-en cada punto estira todas las direcciones por el mismo factor $\sigma$. Eso
-es lo que le importa al cliente: una distancia corta en el mapa es $\sigma$
-veces la real sin importar su orientación, así que vecinos y grupos solo
-dependen de cuánto varía $\sigma$ dentro del país. Hoy el cliente usa
-Mercator; INEGI usa la Cónica Conforme de Lambert con paralelos estándar en
-$17.5^\circ$ y $29.5^\circ$\,N, registrada como EPSG:6372 \cite{epsg} (a veces
-se cita como EPSG:6361, un código que no aparece en el registro como sistema
-de coordenadas). Esta wiki
-compara las dos con la proyección conforme óptima para México y responde
-cuál conviene, cuánto error mete cada una y cuánto se puede ganar.
-
-\subsection{Variables del problema}
-
-\begin{itemize}
-  \item $\lat$, $\lon$: latitud y longitud (grados en el texto, radianes en las
-    fórmulas); $R = 6\,371.0088$~km, el radio medio de la Tierra.
-  \item $q(\lat)$: latitud isométrica, y $w = \lon + i\,q$, la coordenada
-    compleja sobre la esfera (sección~\ref{sec:fundamentos}).
-  \item $z = x + iy = f(w)$: coordenadas planas, en metros.
-  \item $\sigma$: factor de escala, la longitud en el mapa dividida entre la
-    real. En Mercator y Lambert depende solo de $\lat$; en la proyección
-    óptima depende también de la forma de la región.
-  \item $\region$: México continental (de $14.53^\circ$ a $32.72^\circ$\,N y de
-    $86.7^\circ$ a $117.1^\circ$\,O), con frontera $\frontera$, y
-    $\dist$, la distorsión de una proyección sobre $\region$ (Paso~3).
-\end{itemize}
+El objetivo es comparar Mercator con la Cónica Conforme de Lambert y construir una alternativa óptima para la región. Se adopta una esfera de radio $R=6371.0088$ km. Los ángulos se expresan en radianes en las ecuaciones y en grados al describir ubicaciones. El dominio $\Omega$ es México continental simplificado, sin islas ni huecos. Primero se establece por qué las funciones complejas describen su escala. Después se derivan las proyecciones y se evalúan sus consecuencias en datos reales, distinguiendo la deformación local del error entre puntos separados.

@@ -193,16 +193,12 @@ def cambios_vecinos(df, xy, k=10):
 
 def factores_area(df):
     """σ² (cuánto se agranda un área) en las cabeceras, por región."""
-    from . import dirichlet
-
-    # asegura que las dos óptimas ya estén ajustadas
-    proyectar_optima(0.0, 0.0)
-    proyectar_optima_envolvente(0.0, 0.0)
+    from .dirichlet import obtener_modelo
     lat, lon = df["lat"].to_numpy(), df["lon"].to_numpy()
     s2 = {"Mercator": sigma_mercator(lat) ** 2,
           "Lambert INEGI": sigma_lambert(lat) ** 2,
-          "Óptima": np.exp(2 * dirichlet._DEFAULT.ln_sigma(lat, lon)),
-          "Óptima envolvente": np.exp(2 * dirichlet._ENVOLVENTE.ln_sigma(lat, lon))}
+          "Óptima": np.exp(2 * obtener_modelo("optima").ln_sigma(lat, lon)),
+          "Óptima envolvente": np.exp(2 * obtener_modelo("optima_envolvente").ln_sigma(lat, lon))}
     filas = []
     for nombre, v in s2.items():
         for reg in REGIONES + ["Nacional"]:
